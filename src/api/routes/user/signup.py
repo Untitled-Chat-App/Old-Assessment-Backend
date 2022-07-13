@@ -1,16 +1,20 @@
 import random
 
-from fastapi import Depends, APIRouter, HTTPException
+from fastapi import Depends, APIRouter
 
-from core.database import asyncpg_connect
-from core.models import NewUser
 from core.utils import hash_text
+from core.models import NewUser, AuthUser
+from core.database import asyncpg_connect
+from ...auth import check_auth_token
+
 
 signup_endpoint = APIRouter()
 
 
 @signup_endpoint.post("/api/users/signup")
-async def create_account(user_data: NewUser):
+async def create_account(
+    user_data: NewUser, auth_user: AuthUser = Depends(check_auth_token)
+):
     hashed_password = await hash_text(user_data.password)
     async with asyncpg_connect() as conn:
         async with conn.transaction():

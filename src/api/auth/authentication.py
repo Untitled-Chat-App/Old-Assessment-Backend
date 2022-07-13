@@ -44,7 +44,7 @@ async def create_access_token(data: dict, expires_delta: timedelta | None = None
 async def check_auth_token(token: str = Depends(oauth2_scheme)):
     credentials_exception = HTTPException(
         status_code=status.HTTP_401_UNAUTHORIZED,
-        detail="Could not validate credentials",
+        detail="Could not validate credentials, Maybe get a new token",
         headers={"WWW-Authenticate": "Bearer"},
     )
     try:
@@ -80,7 +80,7 @@ async def login_for_access_token(form_data: OAuth2PasswordRequestForm = Depends(
             detail="Incorrect username or password",
             headers={"WWW-Authenticate": "Bearer"},
         )
-    access_token_expires = timedelta(minutes=30)  # you only get 30 min bitch
+    access_token_expires = timedelta(minutes=1440)  # you only get a day
     access_token = await create_access_token(
         data={"sub": user.username}, expires_delta=access_token_expires
     )

@@ -15,12 +15,15 @@ from api.auth import oauth2_endpoint, check_auth_token
 
 load_dotenv()
 app = Chat_API()
+
 app.include_router(signup_endpoint)
 app.include_router(oauth2_endpoint)
 
+
 @app.get("/")
-async def home(user: AuthUser =  Depends(check_auth_token)):
+async def home(user: AuthUser = Depends(check_auth_token)):
     return user
+
 
 # Run
 if __name__ == "__main__":

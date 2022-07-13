@@ -21,6 +21,5 @@ async def create_user_db():
 async def main():
     await create_user_db()
 
+
 asyncio.run(main())
-
-

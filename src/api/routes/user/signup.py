@@ -28,5 +28,5 @@ async def create_account(user_data: NewUser):
                 user_data.username,
                 user_data.email,
                 hashed_password,
-                user_data.public_key
+                user_data.public_key,
             )

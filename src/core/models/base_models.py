@@ -6,6 +6,7 @@ __all__ = ["User"]
 
 from pydantic import BaseModel
 
+
 class NewUser(BaseModel):
     username: str
     email: str
@@ -21,4 +22,3 @@ class Token(BaseModel):
 class AuthUser(BaseModel):
     username: str
     password: str
-

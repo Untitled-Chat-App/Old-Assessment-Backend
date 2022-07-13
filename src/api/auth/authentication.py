@@ -25,7 +25,7 @@ async def get_user(username: str) -> AuthUser | None:
         data = await conn.fetch("SELECT * FROM Users WHERE username=$1", username)
         if not len(data):
             return None
-    if data[0][4] != 23: # asked friend for random number
+    if data[0][4] != 23:  # asked friend for random number
         return None
     return AuthUser(username=data[0][1], password=data[0][3])
 

@@ -1,3 +1,9 @@
+""" (module)
+Functions for hashing passwords to be stored in the database
+"""
+
+__all__ = ["hash_text"]
+
 import os
 import hashlib
 import binascii

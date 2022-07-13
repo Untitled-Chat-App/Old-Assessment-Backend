@@ -1,3 +1,7 @@
+""" (script)
+The code for the oauth system
+"""
+
 import os
 from datetime import datetime, timedelta
 

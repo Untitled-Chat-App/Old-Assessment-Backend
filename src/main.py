@@ -7,6 +7,7 @@ __version__ = "0.0.1"
 
 import uvicorn
 from fastapi import Depends
+from fastapi.responses import RedirectResponse
 from dotenv import load_dotenv
 
 from core.models import Chat_API, AuthUser
@@ -21,7 +22,18 @@ app.include_router(oauth2_endpoint)
 
 
 @app.get("/")
-async def home(user: AuthUser = Depends(check_auth_token)):
+async def home():
+    """
+    The home page, Redirects to docs
+    """
+    return RedirectResponse("/docs")
+
+
+@app.get("/api/users/me")
+async def me(user: AuthUser = Depends(check_auth_token)):
+    """
+    Quick endpoint to check if youre logged in
+    """
     return user
 
 

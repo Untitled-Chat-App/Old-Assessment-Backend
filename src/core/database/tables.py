@@ -1,7 +1,10 @@
+""" (script)
+Create the database incase it got deleted or smth or wanted to redo it
+"""
+
 import asyncio
 
 from context import asyncpg_connect
-
 
 async def create_user_db():
     async with asyncpg_connect() as conn:

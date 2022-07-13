@@ -1,3 +1,7 @@
+""" (module)
+Code for the endpoint to signup/create a new user
+"""
+
 import random
 
 from fastapi import Depends, APIRouter

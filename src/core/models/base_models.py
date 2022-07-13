@@ -2,7 +2,7 @@
 Contains pydantic.BaseModel subclasses for api form data
 """
 
-__all__ = ["User"]
+__all__ = ["NewUser", "Token", "AuthUser"]
 
 from pydantic import BaseModel
 

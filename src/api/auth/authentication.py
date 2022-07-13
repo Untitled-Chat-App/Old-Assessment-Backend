@@ -80,7 +80,7 @@ async def login_for_access_token(form_data: OAuth2PasswordRequestForm = Depends(
             detail="Incorrect username or password",
             headers={"WWW-Authenticate": "Bearer"},
         )
-    access_token_expires = timedelta(minutes=1)  # you only get 30 min bitch
+    access_token_expires = timedelta(minutes=30)  # you only get 30 min bitch
     access_token = await create_access_token(
         data={"sub": user.username}, expires_delta=access_token_expires
     )

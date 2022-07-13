@@ -1,1 +1,1 @@
-# nothing here mate
+from .hash import hash_text

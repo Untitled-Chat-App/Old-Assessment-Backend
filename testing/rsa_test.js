@@ -4,7 +4,7 @@ function generateKeyPair(){
     var key = new rsa().generateKeyPair();
 
     var publicKey = key.exportKey("public")
-    var privateKey = key.exportKey("private")
+    // var privateKey = key.exportKey("private")
     console.log(JSON.stringify(publicKey))
 }
 

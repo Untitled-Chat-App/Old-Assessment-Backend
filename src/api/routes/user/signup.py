@@ -7,9 +7,9 @@ import random
 from fastapi import Depends, APIRouter, HTTPException
 
 from core.utils import hash_text
-from core.models import NewUser, AuthorizedUser
 from core.database import asyncpg_connect
 from ...auth import check_auth_token, get_user
+from core.models import NewUser, AuthorizedUser
 
 
 signup_endpoint = APIRouter()

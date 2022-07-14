@@ -1,5 +1,5 @@
 """ (script)
-Create the database incase it got deleted or smth or wanted to redo it
+Create the database in case it got deleted or smth or i wanted to redo it
 """
 
 import asyncio

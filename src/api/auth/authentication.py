@@ -11,9 +11,9 @@ from jose import JWTError, jwt
 from fastapi import Depends, APIRouter, HTTPException, status
 from fastapi.security import OAuth2PasswordBearer, OAuth2PasswordRequestForm
 
-from core.database import asyncpg_connect
-from core.models import AuthUser, Token, AuthPerms, AuthorizedUser
 from core.utils import hash_text
+from core.database import asyncpg_connect
+from core.models import Token, AuthPerms, AuthorizedUser
 
 load_dotenv()
 

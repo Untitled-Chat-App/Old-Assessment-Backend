@@ -7,8 +7,8 @@ __version__ = "0.0.1"
 
 import uvicorn
 from fastapi import Depends
-from fastapi.responses import RedirectResponse
 from dotenv import load_dotenv
+from fastapi.responses import RedirectResponse
 
 from api.routes import signup_endpoint
 from core.models import Chat_API, AuthorizedUser

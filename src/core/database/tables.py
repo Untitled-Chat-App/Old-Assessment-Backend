@@ -6,9 +6,15 @@ import asyncio
 
 from context import asyncpg_connect
 
+
 async def create_user_db():
-    async with asyncpg_connect() as conn:
-        async with conn.transaction():
+    """
+    Creates Users table in the database
+
+    Takes no parameters and doesn't return anything
+    """
+    async with asyncpg_connect() as conn:  # connect
+        async with conn.transaction():  # start a transaction incase something goes wrong
             await conn.execute(
                 """CREATE TABLE IF NOT EXISTS Users (
                     user_id INTEGER PRIMARY KEY, 

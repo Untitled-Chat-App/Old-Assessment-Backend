@@ -21,11 +21,12 @@ async def asyncpg_connect(database_url: Optional[str] = None):
 
     Parameters
     ----------
-        database_url (str, Optional): If not provided it will use the DATABASE_URL from the .env file as the link
+        database_url (str, Optional): If not provided it will use the DATABASE_URL 
+            from the .env file as the link to the db
 
     Returns
     -------
-        asyncpg.connection.Connection
+        asyncpg.connection.Connection: The connection to the database
     """
     if database_url is None:
         database_url = os.environ["DATABASE_URL"]

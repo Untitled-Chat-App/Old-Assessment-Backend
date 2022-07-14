@@ -39,5 +39,7 @@ async def me(user: AuthorizedUser = Depends(check_auth_token)):
 
 # Run
 if __name__ == "__main__":
+    # For some reason it wont print the normal fastapi stuff so I put this (will remove once testing done):
     print("http://192.168.68.125:443/")
+    # Start the api
     uvicorn.run(app, host="0.0.0.0", port=443, reload=False)

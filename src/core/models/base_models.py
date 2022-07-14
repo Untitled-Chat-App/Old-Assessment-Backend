@@ -6,7 +6,7 @@ __all__ = ["NewUser", "Token", "AuthUser"]
 
 from pydantic import BaseModel
 
-
+# new user class which is used as input for creating a new user (signup endpoint)
 class NewUser(BaseModel):
     username: str
     email: str
@@ -14,16 +14,19 @@ class NewUser(BaseModel):
     public_key: str
 
 
+# Token that will be returned to the function
 class Token(BaseModel):
     access_token: str
     token_type: str
 
 
+# class that is used for the form when getting a token
 class AuthUser(BaseModel):
     username: str
     password: str
 
 
+# Permissions class for a usr
 class AuthPerms(BaseModel):
     # User
     get_user_details: bool
@@ -38,6 +41,7 @@ class AuthPerms(BaseModel):
     delete_users: bool
     update_users: bool
 
-
+# Subclass of authuser but with perms
 class AuthorizedUser(AuthUser):
+    email: str
     permissions: AuthPerms

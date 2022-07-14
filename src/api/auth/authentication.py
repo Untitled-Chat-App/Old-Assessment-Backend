@@ -47,9 +47,9 @@ async def get_user(username: str) -> AuthUser | None:
         perms.update_users = True
 
         return AuthorizedUser(
-            username=data[0][1], password=data[0][3], permissions=perms
+            username=data[0][1], password=data[0][3], email=data[0][2], permissions=perms
         )
-    return AuthorizedUser(username=data[0][1], password=data[0][3], permissions=perms)
+    return AuthorizedUser(username=data[0][1], password=data[0][3], email=data[0][2], permissions=perms)
 
 
 async def create_access_token(data: dict, expires_delta: timedelta | None = None):

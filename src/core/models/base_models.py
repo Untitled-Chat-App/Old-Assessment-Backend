@@ -22,3 +22,22 @@ class Token(BaseModel):
 class AuthUser(BaseModel):
     username: str
     password: str
+
+
+class AuthPerms(BaseModel):
+    # User
+    get_user_details: bool
+    update_user_details: bool
+
+    # Messages
+    get_messages: bool
+    send_messages: bool
+
+    # Admin perms
+    create_users: bool
+    delete_users: bool
+    update_users: bool
+
+
+class AuthorizedUser(AuthUser):
+    permissions: AuthPerms

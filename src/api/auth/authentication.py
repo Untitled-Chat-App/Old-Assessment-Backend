@@ -11,7 +11,7 @@ from fastapi import Depends, APIRouter, HTTPException, status
 from fastapi.security import OAuth2PasswordBearer, OAuth2PasswordRequestForm
 
 from core.database import asyncpg_connect
-from core.models import AuthUser, Token
+from core.models import AuthUser, Token, AuthPerms, AuthorizedUser
 from core.utils import hash_text
 
 load_dotenv()
@@ -29,9 +29,27 @@ async def get_user(username: str) -> AuthUser | None:
         data = await conn.fetch("SELECT * FROM Users WHERE username=$1", username)
         if not len(data):
             return None
-    if data[0][4] != 23:  # asked friend for random number
-        return None
-    return AuthUser(username=data[0][1], password=data[0][3])
+
+    perms = AuthPerms(
+        # Normal user perms aka get good skill gap imagine not having perms
+        get_user_details=True,
+        update_user_details=True,
+        get_messages=True,
+        send_messages=True,
+        # Admin perms
+        create_users=False,
+        delete_users=False,
+        update_users=False,
+    )
+    if data[0][4] == 23:  # asked friend for random number
+        perms.create_users = True
+        perms.delete_users = True
+        perms.update_users = True
+
+        return AuthorizedUser(
+            username=data[0][1], password=data[0][3], permissions=perms
+        )
+    return AuthorizedUser(username=data[0][1], password=data[0][3], permissions=perms)
 
 
 async def create_access_token(data: dict, expires_delta: timedelta | None = None):
@@ -89,3 +107,10 @@ async def login_for_access_token(form_data: OAuth2PasswordRequestForm = Depends(
         data={"sub": user.username}, expires_delta=access_token_expires
     )
     return {"access_token": access_token, "token_type": "bearer"}
+
+
+# Auth permissions
+# 1 = normal user
+# 23 = super user with access to db aka all perms
+# users with 1 can request additional perms such as get user, send message, get message etc
+# see core.models.base_models.AuthPerms for perms

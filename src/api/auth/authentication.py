@@ -2,6 +2,8 @@
 The code for the oauth system for the api
 """
 
+__all__ = ["oauth2_endpoint", "check_auth_token", "get_user"]
+
 import os
 from typing import Optional
 from datetime import datetime, timedelta

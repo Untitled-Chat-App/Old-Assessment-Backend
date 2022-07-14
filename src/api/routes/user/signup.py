@@ -2,6 +2,8 @@
 Code for the endpoint to signup/create a new user
 """
 
+__all__ = ["signup_endpoint"]
+
 import random
 
 from fastapi import Depends, APIRouter, HTTPException

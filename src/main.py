@@ -5,6 +5,7 @@ This is the file that will be run to start the API
 __authors__ = ["Siddhesh Zantye"]
 __version__ = "0.0.1"
 
+import os
 import uvicorn
 from fastapi import Depends
 from dotenv import load_dotenv
@@ -40,8 +41,11 @@ async def me(user: AuthorizedUser = Depends(check_auth_token)):
 
 # Run
 if __name__ == "__main__":
-    # For some reason it wont print the normal fastapi stuff so I put this (will remove once testing done):
-    print("http://192.168.68.125:443/")
-
     # Start the api
-    uvicorn.run(app, host="0.0.0.0", port=443, reload=False)
+    if os.environ["PRODUCTION"] == "False":
+        # For some reason it wont print the normal fastapi stuff so I put this (will remove once testing done):
+        print("http://192.168.68.125:443/")
+        uvicorn.run(app, host="0.0.0.0", port=443, reload=False)
+
+    # If its the actual hosted one:
+    uvicorn.run(app, reload=False, host="0.0.0.0", port=443, ssl_keyfile="./key.pem", ssl_certfile="./cert.pem")

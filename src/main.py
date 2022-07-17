@@ -10,7 +10,7 @@ from fastapi import Depends
 from dotenv import load_dotenv
 from fastapi.responses import RedirectResponse
 
-from api.routes import signup_endpoint
+from api.routes import signup_endpoint, get_user_endpoint
 from core.models import Chat_API, AuthorizedUser
 from api.auth import oauth2_endpoint, check_auth_token
 
@@ -19,6 +19,7 @@ app = Chat_API()
 
 app.include_router(signup_endpoint)
 app.include_router(oauth2_endpoint)
+app.include_router(get_user_endpoint)
 
 
 @app.get("/")
@@ -29,7 +30,7 @@ async def home():
     return RedirectResponse("/docs")
 
 
-@app.get("/api/users/me")
+@app.get("/api/user/me")
 async def me(user: AuthorizedUser = Depends(check_auth_token)):
     """
     Quick endpoint to check if youre logged in

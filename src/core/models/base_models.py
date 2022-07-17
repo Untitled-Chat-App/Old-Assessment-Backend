@@ -45,3 +45,5 @@ class AuthPerms(BaseModel):
 class AuthorizedUser(AuthUser):
     email: str
     permissions: AuthPerms
+    public_key: str
+    user_id: int

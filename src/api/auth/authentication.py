@@ -14,7 +14,7 @@ from fastapi import Depends, APIRouter, HTTPException, status
 from fastapi.security import OAuth2PasswordBearer, OAuth2PasswordRequestForm
 
 from core.utils import hash_text
-from core.database import asyncpg_connect
+from core.database import asyncpg_connect, get_user_by_id, get_user
 from core.models import Token, AuthPerms, AuthorizedUser
 
 load_dotenv()
@@ -37,47 +37,6 @@ async def correct_password(hashed_password: str, db_password: str) -> bool:
         bool: True/False if they password is correct
     """
     return hashed_password == db_password
-
-
-async def get_user(username: str) -> Optional[AuthorizedUser]:
-    """
-    Get user from database and return it as an AuthorizedUser class  
-    Supposed to be used for the authentication but can be used for normal getting user
-
-    Parameters
-    ----------
-        username (str): The username of the user to check the db for
-
-    Returns
-    -------
-        Optional[AuthorizedUser]: If user exists it returns it else returns None
-        
-    """
-    async with asyncpg_connect() as conn:
-        data = await conn.fetch("SELECT * FROM Users WHERE username=$1", username)
-        if not len(data):
-            return None
-
-    perms = AuthPerms(
-        # Normal user perms aka get good skill gap imagine not having perms
-        get_user_details=True,
-        update_user_details=True,
-        get_messages=True,
-        send_messages=True,
-        # Admin perms
-        create_users=False,
-        delete_users=False,
-        update_users=False,
-    )
-    if data[0][4] == 23:  # asked friend for random number
-        perms.create_users = True
-        perms.delete_users = True
-        perms.update_users = True
-
-        return AuthorizedUser(
-            username=data[0][1], password=data[0][3], email=data[0][2], permissions=perms
-        )
-    return AuthorizedUser(username=data[0][1], password=data[0][3], email=data[0][2], permissions=perms)
 
 
 async def create_access_token(data: dict, expires_delta: Optional[timedelta] = None) -> str:

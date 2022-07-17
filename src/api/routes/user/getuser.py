@@ -1,5 +1,5 @@
 """ (module)
-Code for the endpoint to request public keys for a user
+Code for the endpoint to request info for a user by username or id
 """
 
 __all__ = ["get_user_endpoint"]

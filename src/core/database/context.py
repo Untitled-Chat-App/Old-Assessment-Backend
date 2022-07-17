@@ -1,5 +1,5 @@
 """ (module) context
-This contains a context manager for asyncpg
+This contains a custom async context manager for asyncpg so the connection will auto close
 """
 
 __all__ = ["asyncpg_connect"]
@@ -18,6 +18,7 @@ dotenv.load_dotenv()
 async def asyncpg_connect(database_url: Optional[str] = None):
     """
     Custom context manager to use asyncpg
+    Very useful to ensure that once I open a connection it will ALWAYS be closed even upon error
 
     Parameters
     ----------

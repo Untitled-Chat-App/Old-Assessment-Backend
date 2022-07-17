@@ -41,7 +41,9 @@ class AuthPerms(BaseModel):
     delete_users: bool
     update_users: bool
 
-# Subclass of authuser but with perms
+
+# Subclass of authuser but with perms 
+# This will be used cause its basically a User class but i didnt wanna call it that
 class AuthorizedUser(AuthUser):
     email: str
     permissions: AuthPerms

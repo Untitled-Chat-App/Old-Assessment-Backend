@@ -49,3 +49,8 @@ class AuthorizedUser(AuthUser):
     permissions: AuthPerms
     public_key: str
     user_id: int
+
+
+class NewRoom(BaseModel):
+    room_name: str
+    room_description: str

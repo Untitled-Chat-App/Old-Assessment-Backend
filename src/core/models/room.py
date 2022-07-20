@@ -1,3 +1,4 @@
+import json
 from dataclasses import dataclass
 
 from fastapi import WebSocket
@@ -42,10 +43,11 @@ class ChatRoom(Room):
         self.connected_users.remove(user)
 
     async def send_to_user(self, message: RoomMessage, user: RoomUser):
-        await user.websocket.send_json(message.json)
+        await user.websocket.send_json(message.json())
 
     async def broadcast(self, message: RoomMessage):
         for user in self.connected_users:
             if isinstance(message, RoomMessage):
                 await user.websocket.send_text(message.json())
-            await user.websocket.send_json(message)
+            else:
+                await user.websocket.send_json(message)

@@ -21,6 +21,8 @@ from core.models import AuthorizedUser, Room, RoomMessage, RoomUser, ChatRoom
 
 chatroom_websockets = APIRouter()
 
+rooms = {}
+
 
 @chatroom_websockets.websocket("/api/ws/chatroom")
 async def connect_ws(websocket: WebSocket, access_token: str, room_id: int):
@@ -37,35 +39,38 @@ async def connect_ws(websocket: WebSocket, access_token: str, room_id: int):
 
     connection = RoomUser(user=user, websocket=websocket)
 
-    chatroom = ChatRoom(
-        room_id=room.room_id,
-        room_name=room.room_name,
-        created_at=room.created_at,
-        room_description=room.room_description,
-    )
+    chatroom = rooms.get(room_id)
+
+    if chatroom is None:
+        chatroom = ChatRoom(
+            room_id=room.room_id,
+            room_name=room.room_name,
+            created_at=room.created_at,
+            room_description=room.room_description,
+        )
+
+        rooms[room_id] = chatroom
+
+    await chatroom.broadcast({"event": "User Join", "user": connection.user.json()})
     await chatroom.join_room(connection)
 
     try:
         while True:
             data = await connection.websocket.receive_text()
             message: RoomMessage = await process_message_json(data, room)
-            await chatroom.broadcast(json.dumps(message.json()))
-            await chatroom.broadcast({"hi": "hi"})
+            await chatroom.broadcast(message)
 
     except WebSocketDisconnect:
         chatroom.connected_users.remove(connection)
-
-        for user in chatroom.connected_users:
-            await user.websocket.send_json(
-                {"event": "User Disconnect", "user": connection.user.json()}
-            )
+        await chatroom.broadcast({"event": "User Disconnect", "user": connection.user.json()})
 
 
 async def process_message_json(data, room) -> RoomMessage:
     data = json.loads(data)
+
     content = data["message_content"]
     user = await check_auth_token(data["access_token"])
-    msg_id = 123
+    msg_id = 123  # will use real ids later
     created_at = datetime.datetime.utcnow().timestamp()
     message = RoomMessage(
         chatroom=room,

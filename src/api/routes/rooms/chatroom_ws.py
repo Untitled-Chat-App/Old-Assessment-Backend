@@ -37,43 +37,36 @@ async def connect_ws(websocket: WebSocket, access_token: str, room_id: int):
 
     connection = RoomUser(user=user, websocket=websocket)
 
-    room = ChatRoom(
+    chatroom = ChatRoom(
         room_id=room.room_id,
         room_name=room.room_name,
         created_at=room.created_at,
         room_description=room.room_description,
     )
-    await room.join_room(connection)
+    await chatroom.join_room(connection)
 
     try:
         while True:
-            print("e")
             data = await connection.websocket.receive_text()
-            print("e")
             message: RoomMessage = await process_message_json(data, room)
-            print("e")
-            await room.broadcast(json.dumps(message.json()))
-            print("e")
-            await room.broadcast({"hi":"hi"})
-            print("e")
+            await chatroom.broadcast(json.dumps(message.json()))
+            await chatroom.broadcast({"hi": "hi"})
 
     except WebSocketDisconnect:
-        room.connected_users.remove(connection)
+        chatroom.connected_users.remove(connection)
 
-    for user in room.connected_users:
-        await user.websocket.send_json(
-            {"event": "User Disconnect", "user": connection.user.json()}
-        )
+        for user in chatroom.connected_users:
+            await user.websocket.send_json(
+                {"event": "User Disconnect", "user": connection.user.json()}
+            )
 
 
 async def process_message_json(data, room) -> RoomMessage:
-    print("e")
     data = json.loads(data)
     content = data["message_content"]
     user = await check_auth_token(data["access_token"])
     msg_id = 123
     created_at = datetime.datetime.utcnow().timestamp()
-    print("e")
     message = RoomMessage(
         chatroom=room,
         message_id=msg_id,
@@ -81,4 +74,4 @@ async def process_message_json(data, room) -> RoomMessage:
         messsage_content=content,
         message_author=user,
     )
-    print(message)
+    return message

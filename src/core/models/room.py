@@ -46,4 +46,6 @@ class ChatRoom(Room):
 
     async def broadcast(self, message: RoomMessage):
         for user in self.connected_users:
-            await user.websocket.send_json(message.json())
+            if isinstance(message, RoomMessage):
+                await user.websocket.send_text(message.json())
+            await user.websocket.send_json(message)

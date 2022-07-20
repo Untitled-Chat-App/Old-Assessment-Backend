@@ -9,3 +9,6 @@ run:
 clean:
 	@find . | grep -E '(__pycache__|\.pyc|\.pyo$|\.DS_Store)' | xargs rm -rf
 
+# Test api
+test:
+	@cd src; uvicorn main:app --reload --host="0.0.0.0" --port=443

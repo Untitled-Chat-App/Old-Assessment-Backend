@@ -6,3 +6,4 @@ python-dotenv==0.20.0
 python_jose==3.3.0
 slowapi==0.1.5
 uvicorn==0.18.1
+python-multipart

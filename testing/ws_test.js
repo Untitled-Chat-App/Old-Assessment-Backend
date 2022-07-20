@@ -24,11 +24,10 @@ ws.onopen = function (event) {
 };
 
 function recursive_parse(msg) {
-    console.log(msg)
-    if (typeof (message) === "object") {
-        console.log()
-        return message;
+    console.log(typeof(msg))
+    if (typeof (msg) == "object") {
+        return msg;
     }
-    message = JSON.parse(msg);
-    recursive_parse(message);
+    msg = JSON.parse(msg);
+    recursive_parse(msg);
 }

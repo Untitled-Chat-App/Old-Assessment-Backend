@@ -11,7 +11,7 @@ from fastapi import Depends
 from dotenv import load_dotenv
 from fastapi.responses import RedirectResponse
 
-from api.routes import signup_endpoint, get_user_endpoint, websocket_endpoints
+from api.routes import signup_endpoint, get_user_endpoint, chatroom_websockets, chatroom_endpoints
 from core.models import Chat_API, AuthorizedUser
 from api.auth import oauth2_endpoint, check_auth_token
 
@@ -21,8 +21,8 @@ app = Chat_API()
 app.include_router(signup_endpoint)
 app.include_router(oauth2_endpoint)
 app.include_router(get_user_endpoint)
-app.include_router(websocket_endpoints)
-
+app.include_router(chatroom_websockets)
+app.include_router(chatroom_endpoints)
 
 @app.get("/")
 async def home():

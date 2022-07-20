@@ -1,2 +1,2 @@
 from .context import asyncpg_connect
-from .fetch import get_user, get_user_by_id
+from .fetch import get_user, get_user_by_id, get_room

@@ -34,6 +34,7 @@ ws.onclose = function (event) {
 };
 
 ws.onopen = function (event) {
+    console.log(event)
     ws.send(
         JSON.stringify({ message_content: "Test Message", access_token: access_token })
     );

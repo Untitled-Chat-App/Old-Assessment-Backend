@@ -39,15 +39,17 @@ async def me(user: AuthorizedUser = Depends(check_auth_token)):
     """
     return user
 
+HOST_IP = os.environ["HOST_IP"]
 
 # Run
 if __name__ == "__main__":
     # Start the api
     if os.environ["PRODUCTION"] == "False":
-        uvicorn.run("main:app", host="0.0.0.0", port=443, reload=False)
+        uvicorn.run("main:app", host=HOST_IP, port=443, reload=False)
         # I prefer to use this (cli uvicorn) though for dev:
         # uvicorn main:app --reload --host="0.0.0.0" --port=443
+        # or just: make test cause im lazy
 
 
     # If its the actual hosted one:
-    uvicorn.run(app, reload=False, host="0.0.0.0", port=443, ssl_keyfile="./key.pem", ssl_certfile="./cert.pem")
+    uvicorn.run(app, reload=False, host=HOST_IP, port=443, ssl_keyfile="./key.pem", ssl_certfile="./cert.pem")

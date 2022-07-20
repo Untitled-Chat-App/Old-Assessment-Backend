@@ -38,8 +38,8 @@ class ChatRoom(Room):
     async def disconnect(self, user: RoomUser):
         try:
             await user.websocket.close()
-        except Exception:
-            pass
+        except RuntimeError:
+            print(f"Error while closing websocket connection with {user.user.username}")
         self.connected_users.remove(user)
 
     async def send_to_user(self, message: RoomMessage, user: RoomUser):

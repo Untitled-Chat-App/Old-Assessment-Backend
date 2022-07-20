@@ -25,7 +25,7 @@
             let msg = event.data
             var messages = document.getElementById('messages')
             var message = document.createElement('li')
-            
+
             while (typeof msg !== "object") {
                 msg = JSON.parse(msg);
             }
@@ -46,7 +46,7 @@
                 var what_happened = `${msg["message_author"]["username"]}: ${msg["messsage_content"]}`;
                 var content = document.createTextNode(what_happened)
             }
-            
+
             var content = document.createTextNode(what_happened)
             message.appendChild(content)
             messages.appendChild(message)

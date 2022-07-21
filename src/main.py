@@ -11,7 +11,13 @@ from fastapi import Depends
 from dotenv import load_dotenv
 from fastapi.responses import RedirectResponse
 
-from api.routes import signup_endpoint, get_user_endpoint, chatroom_websockets, chatroom_endpoints
+from api.routes import (
+    signup_endpoint,
+    get_user_endpoint,
+    chatroom_websockets,
+    chatroom_endpoints,
+    other_user_endpoints,
+)
 from core.models import Chat_API, AuthorizedUser
 from api.auth import oauth2_endpoint, check_auth_token
 
@@ -23,6 +29,8 @@ app.include_router(oauth2_endpoint)
 app.include_router(get_user_endpoint)
 app.include_router(chatroom_websockets)
 app.include_router(chatroom_endpoints)
+app.include_router(other_user_endpoints)
+
 
 @app.get("/")
 async def home():
@@ -39,6 +47,7 @@ async def me(user: AuthorizedUser = Depends(check_auth_token)):
     """
     return user
 
+
 HOST_IP = os.environ["HOST_IP"]
 
 # Run
@@ -50,6 +59,12 @@ if __name__ == "__main__":
         # uvicorn main:app --reload --host="0.0.0.0" --port=443
         # or just: make test cause im lazy
 
-
     # If its the actual hosted one:
-    uvicorn.run(app, reload=False, host=HOST_IP, port=443, ssl_keyfile="./key.pem", ssl_certfile="./cert.pem")
+    uvicorn.run(
+        app,
+        reload=False,
+        host=HOST_IP,
+        port=443,
+        ssl_keyfile="./key.pem",
+        ssl_certfile="./cert.pem",
+    )

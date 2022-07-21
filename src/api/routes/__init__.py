@@ -1,4 +1,5 @@
 from .user.signup import signup_endpoint
+from .user.modify_user import other_user_endpoints
 from .user.getuser import get_user_endpoint
 
 from .rooms.chatroom_ws import chatroom_websockets

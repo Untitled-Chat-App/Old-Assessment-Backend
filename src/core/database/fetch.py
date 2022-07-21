@@ -4,6 +4,7 @@ The purpose is to split up these core useful functions into another file so it i
 """
 
 from typing import Optional
+import asyncpg
 
 from core.database import asyncpg_connect
 from core.models import AuthPerms, AuthorizedUser, Room
@@ -77,7 +78,10 @@ async def get_user_by_id(user_id: int) -> Optional[AuthorizedUser]:
 
     """
     async with asyncpg_connect() as conn:
-        data = await conn.fetch("SELECT * FROM Users WHERE user_id=$1", user_id)
+        try:
+            data = await conn.fetch("SELECT * FROM Users WHERE user_id=$1", user_id)
+        except asyncpg.exceptions.DataError:
+            return None
         if not len(data):
             return None
 

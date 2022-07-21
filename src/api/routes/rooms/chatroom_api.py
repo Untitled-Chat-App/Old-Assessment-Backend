@@ -56,6 +56,7 @@ async def create_new_chatroom(
 
 
 @chatroom_endpoints.get("/api/chatroom/{room_id}")
-async def get_room_by_id(room_id: int, auth_user: AuthorizedUser = Depends(check_auth_token)):
+async def get_room_by_id(
+    room_id: int, auth_user: AuthorizedUser = Depends(check_auth_token)
+):
     return await get_room(room_id)
-

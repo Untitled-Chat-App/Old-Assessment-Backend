@@ -73,8 +73,8 @@ async def create_account(
             )
 
     user = await get_user(user_data.username)  # fetch user from database
-
     if user is not None:  # if user exists (user was created properly), return user
+        del user.password
         return {"success": True, "detail": "User created successfully", "user": user}
     # if not tell em you failed
     return HTTPException(

@@ -31,11 +31,11 @@ async def connect_ws(websocket: WebSocket, access_token: str, room_id: int):
         user = await check_auth_token(access_token)
     except HTTPException:  # means that it is an invalid access token
         await websocket.accept()
-        return await websocket.close(reason="Invalid access token")
-
+        return await websocket.close(reason="Error: Invalid access token.\nNote: Tokens expire 24 hours after their creation")
+    del user.password
     if (room := await get_room(room_id)) is None:
         await websocket.accept()
-        return await websocket.close(reason="Invalid room id")
+        return await websocket.close(reason="Error: Invalid Room ID")
 
     connection = RoomUser(user=user, websocket=websocket)
 
@@ -62,7 +62,9 @@ async def connect_ws(websocket: WebSocket, access_token: str, room_id: int):
 
     except WebSocketDisconnect:
         chatroom.connected_users.remove(connection)
-        await chatroom.broadcast({"event": "User Disconnect", "user": connection.user.json()})
+        await chatroom.broadcast(
+            {"event": "User Disconnect", "user": connection.user.json()}
+        )
 
 
 async def process_message_json(data, room) -> RoomMessage:
@@ -70,6 +72,7 @@ async def process_message_json(data, room) -> RoomMessage:
 
     content = data["message_content"]
     user = await check_auth_token(data["access_token"])
+    del user.password
     msg_id = 123  # will use real ids later
     created_at = datetime.datetime.utcnow().timestamp()
     message = RoomMessage(

@@ -9,7 +9,8 @@ import os
 import uvicorn
 from fastapi import Depends
 from dotenv import load_dotenv
-from fastapi.responses import RedirectResponse
+from fastapi.responses import RedirectResponse, HTMLResponse
+from fastapi.middleware.cors import CORSMiddleware
 
 from api.routes import (
     signup_endpoint,
@@ -31,13 +32,26 @@ app.include_router(chatroom_websockets)
 app.include_router(chatroom_endpoints)
 app.include_router(other_user_endpoints)
 
+# cors
+origins = ["*"]
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=origins,
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 
 @app.get("/")
 async def home():
     """
     The home page, Redirects to docs
     """
-    return RedirectResponse("/docs")
+    # return RedirectResponse("/docs")÷
+
+    with open("../testing/demo.html") as f:
+        data = f.read()
+    return HTMLResponse(content=data)
 
 
 @app.get("/api/user/me")

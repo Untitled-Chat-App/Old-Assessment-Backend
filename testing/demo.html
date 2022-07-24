@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Untitled Chat</title>
+</head>
+<body>
+    <h1>Chat thing</h1>
+    <form>
+        <input type="text" id="messageText" autocomplete="off" />
+        <button type="submit">Send</button>
+    </form>
+    <ul id='messages'>
+    </ul>
+    <script>
+        const API_URL = "http://chatapi.fusionsid.xyz"
+        const room_id = 648061937;
+
+        var username = prompt("Enter username", username)
+        var password = prompt("Enter password", password)
+
+        let login_details = new URLSearchParams({
+            username: username,
+            password: password,
+        }).toString();
+
+        fetch(`${API_URL}/token`, {
+            method: "POST",
+            headers: {
+                Accept: "application/json",
+                "Content-Type": "application/x-www-form-urlencoded",
+            },
+            body: login_details,
+        })
+            .then((response) => response.json())
+            .then((data) => {
+                start(data["access_token"])
+            });
+
+        function start(access_token) {
+            var ws = new WebSocket(
+                `ws://chatapi.fusionsid.xyz/api/ws/chatroom?access_token=${access_token}&room_id=${room_id}`
+            );
+            ws.onmessage = function (event) {
+                let msg = event.data
+                var messages = document.getElementById('messages')
+                var message = document.createElement('li')
+
+                while (typeof msg !== "object") {
+                    msg = JSON.parse(msg);
+                }
+                if (msg["event"] !== undefined) {
+                    if (msg["event"] === "User Disconnect") {
+                        user = JSON.parse(msg["user"]);
+                        var what_happened = `${user['username']} left the chat`
+                        message.style.color = "red";
+                    }
+                    if (msg["event"] === "User Join") {
+                        user = JSON.parse(msg["user"]);
+                        var what_happened = `${user['username']} joined the chat`
+                        var content = document.createTextNode(what_happened)
+                        message.style.color = "red"
+                    }
+                }
+                else {
+                    var what_happened = `${msg["message_author"]["username"]}: ${msg["messsage_content"]}`;
+                    var content = document.createTextNode(what_happened)
+                }
+
+                var content = document.createTextNode(what_happened)
+                message.appendChild(content)
+                messages.appendChild(message)
+            };
+
+            function sendMessage(event) {
+                event.preventDefault()
+                var input = document.getElementById("messageText")
+                ws.send(
+                    JSON.stringify({ message_content: input.value, access_token: access_token })
+                );
+                input.value = ''
+            }
+
+            const form = document.querySelector("form")
+            form.addEventListener('submit', sendMessage)
+        }
+    </script>
+</body>
+
+</html>

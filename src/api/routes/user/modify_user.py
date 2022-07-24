@@ -9,7 +9,7 @@ from pydantic import BaseModel
 from fastapi.responses import JSONResponse
 
 from ...auth import check_auth_token
-from core.models import AuthorizedUser, AuthPerms
+from core.models import AuthorizedUser
 from core.database import get_user_by_id, asyncpg_connect
 from core.utils import hash_text
 

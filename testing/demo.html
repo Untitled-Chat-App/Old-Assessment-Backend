@@ -13,7 +13,7 @@
     <ul id='messages'>
     </ul>
     <script>
-        const API_URL = "http://chatapi.fusionsid.xyz"
+        const API_URL = "https://chatapi.fusionsid.xyz"
         const room_id = 648061937;
 
         var username = prompt("Enter username", username)
@@ -39,7 +39,7 @@
 
         function start(access_token) {
             var ws = new WebSocket(
-                `ws://chatapi.fusionsid.xyz/api/ws/chatroom?access_token=${access_token}&room_id=${room_id}`
+                `wss://chatapi.fusionsid.xyz/api/ws/chatroom?access_token=${access_token}&room_id=${room_id}`
             );
             ws.onmessage = function (event) {
                 let msg = event.data

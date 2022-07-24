@@ -9,7 +9,7 @@ import os
 import uvicorn
 from fastapi import Depends
 from dotenv import load_dotenv
-from fastapi.responses import RedirectResponse, HTMLResponse
+from fastapi.responses import HTMLResponse
 from fastapi.middleware.cors import CORSMiddleware
 
 from api.routes import (

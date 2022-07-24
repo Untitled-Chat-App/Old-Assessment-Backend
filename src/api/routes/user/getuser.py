@@ -5,7 +5,7 @@ Code for the endpoint to request info for a user by username or id
 __all__ = ["get_user_endpoint"]
 
 
-from fastapi import Depends, APIRouter, HTTPException
+from fastapi import Depends, APIRouter, HTTPException, Request
 
 from ...auth import check_auth_token
 from core.models import AuthorizedUser, AuthPerms
@@ -17,7 +17,9 @@ get_user_endpoint = APIRouter()
 
 @get_user_endpoint.get("/api/users/{user_id}")
 async def get_user_with_user_id(
-    user_id: int, auth_user: AuthorizedUser = Depends(check_auth_token)
+    request: Request,
+    user_id: int,
+    auth_user: AuthorizedUser = Depends(check_auth_token),
 ):
     """
     Get some users by their userid
@@ -51,7 +53,9 @@ async def get_user_with_user_id(
 
 
 @get_user_endpoint.get("/api/getAllUsers")
-async def get_all_users(auth_user: AuthorizedUser = Depends(check_auth_token)):
+async def get_all_users(
+    request: Request, auth_user: AuthorizedUser = Depends(check_auth_token)
+):
     """
     Get all of the users HAHAHAHAA
     """

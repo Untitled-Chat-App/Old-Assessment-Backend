@@ -22,7 +22,7 @@ async def asyncpg_connect(database_url: Optional[str] = None):
 
     Parameters
     ----------
-        database_url (str, Optional): If not provided it will use the DATABASE_URL 
+        database_url (str, Optional): If not provided it will use the DATABASE_URL
             from the .env file as the link to the db
 
     Returns

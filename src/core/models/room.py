@@ -6,8 +6,9 @@ from pydantic import BaseModel
 
 from core.models import AuthorizedUser
 
+
 @dataclass
-class RoomUser():
+class RoomUser:
     user: AuthorizedUser
     websocket: WebSocket
 

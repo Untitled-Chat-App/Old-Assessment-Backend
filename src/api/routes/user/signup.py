@@ -6,7 +6,7 @@ __all__ = ["signup_endpoint"]
 
 import random
 
-from fastapi import Depends, APIRouter, HTTPException
+from fastapi import Depends, APIRouter, HTTPException, Request
 
 from core.utils import hash_text
 from core.database import asyncpg_connect
@@ -19,7 +19,9 @@ signup_endpoint = APIRouter()
 
 @signup_endpoint.post("/api/users/signup")
 async def create_account(
-    user_data: NewUser, auth_user: AuthorizedUser = Depends(check_auth_token)
+    request: Request,
+    user_data: NewUser,
+    auth_user: AuthorizedUser = Depends(check_auth_token),
 ):
     """
     Create a new user. Used when someone is signing up to the app.

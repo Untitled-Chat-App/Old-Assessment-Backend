@@ -9,6 +9,8 @@ import os
 import uvicorn
 from fastapi import Depends
 from dotenv import load_dotenv
+
+from fastapi import Request
 from fastapi.responses import HTMLResponse
 from fastapi.middleware.cors import CORSMiddleware
 
@@ -42,8 +44,9 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
+
 @app.get("/")
-async def home():
+async def home(request: Request):
     """
     The home page, Redirects to docs
     """
@@ -55,7 +58,7 @@ async def home():
 
 
 @app.get("/api/user/me")
-async def me(user: AuthorizedUser = Depends(check_auth_token)):
+async def me(request: Request, user: AuthorizedUser = Depends(check_auth_token)):
     """
     Quick endpoint to check if youre logged in
     """

@@ -10,7 +10,7 @@ from datetime import datetime, timedelta
 
 from dotenv import load_dotenv
 from jose import JWTError, jwt
-from fastapi import Depends, APIRouter, HTTPException, status
+from fastapi import Depends, APIRouter, HTTPException, status, Request
 from fastapi.security import OAuth2PasswordBearer, OAuth2PasswordRequestForm
 
 from core.utils import hash_text
@@ -20,7 +20,9 @@ from core.models import Token, AuthPerms, AuthorizedUser
 load_dotenv()
 
 oauth2_endpoint = APIRouter()
-oauth2_scheme = OAuth2PasswordBearer(tokenUrl="token") # set the /token endpoint as the oauth2 endpoint
+oauth2_scheme = OAuth2PasswordBearer(
+    tokenUrl="token"
+)  # set the /token endpoint as the oauth2 endpoint
 
 
 async def correct_password(hashed_password: str, db_password: str) -> bool:
@@ -29,7 +31,7 @@ async def correct_password(hashed_password: str, db_password: str) -> bool:
 
     Parameters
     ----------
-        hashed_password (str): The password that was entered by the user  
+        hashed_password (str): The password that was entered by the user
         db_password (str): The real password that in the db
 
     Returns
@@ -39,14 +41,16 @@ async def correct_password(hashed_password: str, db_password: str) -> bool:
     return hashed_password == db_password
 
 
-async def create_access_token(data: dict, expires_delta: Optional[timedelta] = None) -> str:
+async def create_access_token(
+    data: dict, expires_delta: Optional[timedelta] = None
+) -> str:
     """
-    Creates a jwt access token. Token will be encoded with data. Since it uses JWT it can be decoded 
+    Creates a jwt access token. Token will be encoded with data. Since it uses JWT it can be decoded
     But it is signed so if you try modifiying it without knowing the sign... (spoiler: it wont work cause you have a skill issue)
 
     Parameters
     ----------
-        data (dict): The data to be encoded and put in the JWT token  
+        data (dict): The data to be encoded and put in the JWT token
         expires_delta (timedelta, Optional): How long the token should last. If not provided it will expire in 15min
 
     Returns
@@ -54,11 +58,13 @@ async def create_access_token(data: dict, expires_delta: Optional[timedelta] = N
         str: The JWT token with expiry and username encoded in
     """
     to_encode = data.copy()
-    if expires_delta: # set expire time for the token
-        expire = datetime.utcnow() + expires_delta 
+    if expires_delta:  # set expire time for the token
+        expire = datetime.utcnow() + expires_delta
     else:
-        expire = datetime.utcnow() + timedelta(minutes=15) # if not provided time then set to 15min
-    to_encode.update({"exp": expire}) # add in expiry time
+        expire = datetime.utcnow() + timedelta(
+            minutes=15
+        )  # if not provided time then set to 15min
+    to_encode.update({"exp": expire})  # add in expiry time
     encoded_jwt = jwt.encode(to_encode, os.environ["JWT_SIGN"], algorithm="HS256")
     return encoded_jwt
 
@@ -70,7 +76,7 @@ async def check_auth_token(token: str = Depends(oauth2_scheme)) -> AuthorizedUse
     Parameters
     ----------
         token (str): The oauth2 JWT access token you got from the /token endpoint
-    
+
     Returns
     -------
         AuthorizedUser: If token is correct and not expired it will return the User. If not it raises an error.
@@ -82,14 +88,18 @@ async def check_auth_token(token: str = Depends(oauth2_scheme)) -> AuthorizedUse
         headers={"WWW-Authenticate": "Bearer"},
     )
     try:
-        payload = jwt.decode(token, os.environ["JWT_SIGN"], algorithms=["HS256"]) # decode token
+        payload = jwt.decode(
+            token, os.environ["JWT_SIGN"], algorithms=["HS256"]
+        )  # decode token
         username: str = payload.get("sub")
         if username is None:
             raise credentials_exception
     except JWTError:
         raise credentials_exception
 
-    user = await get_user(username=username) # get user from the username that was in the token and check if they exist
+    user = await get_user(
+        username=username
+    )  # get user from the username that was in the token and check if they exist
     if user is None:
         raise credentials_exception
     return user
@@ -108,19 +118,21 @@ async def authenticate_user(username: str, password: str) -> AuthorizedUser | bo
     -------
         Union[AuthorizedUser, bool]: If user is authorised then it returns the user if not it returns False
     """
-    user = await get_user(username) # check if user exists
+    user = await get_user(username)  # check if user exists
     if user is None:
         return False
-    if not await correct_password(password, user.password): # check if password is correct
+    if not await correct_password(
+        password, user.password
+    ):  # check if password is correct
         return False
     return user
 
 
 @oauth2_endpoint.post("/token", response_model=Token)
-async def login_for_access_token(form_data: OAuth2PasswordRequestForm = Depends()):
+async def login_for_access_token(request: Request, form_data: OAuth2PasswordRequestForm = Depends()):
     """
     Request an oauth2 access token
-    
+
     Requirements
     ------------
         username & password to the account

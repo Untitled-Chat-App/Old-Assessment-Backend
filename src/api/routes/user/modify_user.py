@@ -4,7 +4,7 @@ Code for the endpoint to update a user or delete them
 
 __all__ = ["get_user_endpoint"]
 
-from fastapi import Depends, APIRouter, HTTPException
+from fastapi import Depends, APIRouter, HTTPException, Request
 from pydantic import BaseModel
 from fastapi.responses import JSONResponse
 
@@ -24,6 +24,7 @@ class UpdateBody(BaseModel):
 
 @other_user_endpoints.patch("/api/users/{user_id}")
 async def update_user_data(
+    request: Request,
     user_id: int,
     update_details: UpdateBody,
     auth_user: AuthorizedUser = Depends(check_auth_token),

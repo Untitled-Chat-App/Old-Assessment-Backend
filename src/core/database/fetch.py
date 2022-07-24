@@ -126,7 +126,7 @@ async def get_room(room_id: int = None, room_name: str = None) -> Room | None:
     Parameters
     ----------
         room_id (Optional[int]): The id of the room to search for
-        room_name (Optional[str]): The name of the room to search for 
+        room_name (Optional[str]): The name of the room to search for
 
     Returns
     -------

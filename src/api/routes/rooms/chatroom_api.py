@@ -7,11 +7,7 @@ __all__ = ["chatroom_endpoints"]
 import random
 import datetime
 
-from fastapi import (
-    APIRouter,
-    Depends,
-    HTTPException,
-)
+from fastapi import APIRouter, Depends, HTTPException, Request
 
 from ...auth import check_auth_token
 from core.database import asyncpg_connect, get_room
@@ -23,7 +19,9 @@ chatroom_endpoints = APIRouter()
 
 @chatroom_endpoints.post("/api/chatroom/new")
 async def create_new_chatroom(
-    room_data: NewRoom, auth_user: AuthorizedUser = Depends(check_auth_token)
+    request: Request,
+    room_data: NewRoom,
+    auth_user: AuthorizedUser = Depends(check_auth_token),
 ):
     room_name = room_data.room_name
     room_description = room_data.room_description
@@ -57,6 +55,8 @@ async def create_new_chatroom(
 
 @chatroom_endpoints.get("/api/chatroom/{room_id}")
 async def get_room_by_id(
-    room_id: int, auth_user: AuthorizedUser = Depends(check_auth_token)
+    request: Request,
+    room_id: int,
+    auth_user: AuthorizedUser = Depends(check_auth_token),
 ):
     return await get_room(room_id)

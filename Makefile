@@ -12,3 +12,7 @@ clean:
 # Test api
 test:
 	@cd src; uvicorn main:app --reload --host="0.0.0.0" --port=443
+
+# Format all the files
+format:
+	@black ./

@@ -24,9 +24,8 @@ async def get_user_with_user_id(
     """
     Get some users by their userid
 
-    Requirements
-    ------------
-        user_id
+    Parameters:
+        user_id (int): The user ID of the user to fetch
     """
     if (
         auth_user.permissions.get_user_details != True

@@ -29,6 +29,16 @@ async def update_user_data(
     update_details: UpdateBody,
     auth_user: AuthorizedUser = Depends(check_auth_token),
 ):
+    """
+    Update a user in the database
+
+    Parameters:
+        user_id (int): The id of the user to modify
+        update_details {
+            attribute (str): The attribute of the user you want to modify (eg "username")
+            new_value (str|int|bool): The new value of that attribute
+        }
+    """
     OPTIONS = list(AuthorizedUser.__fields__.keys())
     OPTIONS.remove("user_id")
     OPTIONS.remove("permissions")

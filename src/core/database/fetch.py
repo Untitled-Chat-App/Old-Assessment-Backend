@@ -4,6 +4,7 @@ The purpose is to split up these core useful functions into another file so it i
 """
 
 from typing import Optional
+
 import asyncpg
 
 from core.database import asyncpg_connect
@@ -15,12 +16,10 @@ async def get_user(username: str) -> Optional[AuthorizedUser]:
     Get user from database and return it as an AuthorizedUser class
     Supposed to be used for the authentication but can be used for normal getting user
 
-    Parameters
-    ----------
+    Parameters:
         username (str): The username of the user to check the db for
 
-    Returns
-    -------
+    Returns:
         Optional[AuthorizedUser]: If user exists it returns it else returns None
 
     """
@@ -68,12 +67,10 @@ async def get_user_by_id(user_id: int) -> Optional[AuthorizedUser]:
     Get user from database and return it as an AuthorizedUser class
     Supposed to be used for the authentication but can be used for normal getting user
 
-    Parameters
-    ----------
+    Parameters:
         user_id (int): The user_id of the user to check the db for
 
-    Returns
-    -------
+    Returns:
         Optional[AuthorizedUser]: If user exists it returns it else returns None
 
     """
@@ -123,13 +120,11 @@ async def get_room(room_id: int = None, room_name: str = None) -> Room | None:
     """
     Fetches a Room from the Rooms table using either the room's id or the name
 
-    Parameters
-    ----------
+    Parameters:
         room_id (Optional[int]): The id of the room to search for
         room_name (Optional[str]): The name of the room to search for
 
-    Returns
-    -------
+    Returns:
         Optional[Room]: The room object if found else it will be None
     """
     if not any([room_id, room_name]) or all([room_id, room_name]):

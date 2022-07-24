@@ -26,9 +26,11 @@ async def create_account(
     """
     Create a new user. Used when someone is signing up to the app.
 
-    Requirements
-    ------------
-        username, password, email, public_key
+    Parameters:
+        username (str): The new users username
+        email (str): The new users email
+        password (str): The new users password
+        public_key (str): The new users public_key
     """
     if (
         auth_user.permissions.create_users != True

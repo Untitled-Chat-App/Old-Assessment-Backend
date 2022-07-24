@@ -23,6 +23,13 @@ async def create_new_chatroom(
     room_data: NewRoom,
     auth_user: AuthorizedUser = Depends(check_auth_token),
 ):
+    """
+    Create a new chatroom
+
+    Parameters:
+        room_name (str): The name of the room to create
+        room_description (str): the description of the room
+    """
     room_name = room_data.room_name
     room_description = room_data.room_description
 
@@ -59,4 +66,10 @@ async def get_room_by_id(
     room_id: int,
     auth_user: AuthorizedUser = Depends(check_auth_token),
 ):
+    """
+    Get room by the id
+
+    Parameters:
+        room_id (int): The id of the room to search for
+    """
     return await get_room(room_id)

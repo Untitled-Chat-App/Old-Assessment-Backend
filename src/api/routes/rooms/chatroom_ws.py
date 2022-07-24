@@ -16,7 +16,7 @@ from fastapi import (
 
 from core.database import get_room
 from ...auth import check_auth_token
-from core.models import RoomMessage, RoomUser, ChatRoom
+from core.models import RoomMessage, RoomUser, ChatRoom, Room
 
 
 chatroom_websockets = APIRouter()
@@ -26,7 +26,13 @@ rooms = {}
 
 @chatroom_websockets.websocket("/api/ws/chatroom")
 async def connect_ws(websocket: WebSocket, access_token: str, room_id: int):
+    """
+    Connects a user to a room
 
+    Parameters:
+        access_token (str): The access token for the account
+        room_id (int): Id of the room to join
+    """
     try:
         user = await check_auth_token(access_token)
     except HTTPException:  # means that it is an invalid access token
@@ -69,7 +75,18 @@ async def connect_ws(websocket: WebSocket, access_token: str, room_id: int):
         )
 
 
-async def process_message_json(data, room) -> RoomMessage:
+async def process_message_json(data: str, room: Room) -> RoomMessage:
+    """
+    Process data sent from the user connected to the websocket
+    Converts to a RoomMessage object, handles ID, created_at, author etc
+
+    Parameters:
+        data (str): Data recieved from the websocket (RoomUser.websocket.receive_text())
+        room (Room): The room currently connected to
+
+    Returns:
+        RoomMessage: The message created using the data
+    """
     data = json.loads(data)
 
     content = data["message_content"]

@@ -29,13 +29,11 @@ async def correct_password(hashed_password: str, db_password: str) -> bool:
     """
     Very simple function to check if input1 == input2
 
-    Parameters
-    ----------
+    Parameters:
         hashed_password (str): The password that was entered by the user
         db_password (str): The real password that in the db
 
-    Returns
-    -------
+    Returns:
         bool: True/False if they password is correct
     """
     return hashed_password == db_password
@@ -48,13 +46,11 @@ async def create_access_token(
     Creates a jwt access token. Token will be encoded with data. Since it uses JWT it can be decoded
     But it is signed so if you try modifiying it without knowing the sign... (spoiler: it wont work cause you have a skill issue)
 
-    Parameters
-    ----------
+    Parameters:
         data (dict): The data to be encoded and put in the JWT token
-        expires_delta (timedelta, Optional): How long the token should last. If not provided it will expire in 15min
+        expires_delta (Optional[timedelta]): How long the token should last. If not provided it will expire in 15min
 
-    Returns
-    -------
+    Returns:
         str: The JWT token with expiry and username encoded in
     """
     to_encode = data.copy()
@@ -73,12 +69,10 @@ async def check_auth_token(token: str = Depends(oauth2_scheme)) -> AuthorizedUse
     """
     Checks the token to see if its legit
 
-    Parameters
-    ----------
+    Parameters:
         token (str): The oauth2 JWT access token you got from the /token endpoint
 
-    Returns
-    -------
+    Returns:
         AuthorizedUser: If token is correct and not expired it will return the User. If not it raises an error.
 
     """
@@ -109,14 +103,12 @@ async def authenticate_user(username: str, password: str) -> AuthorizedUser | bo
     """
     Authenticate user and check if they exists and password is correct
 
-    Parameters
-    ----------
+    Parameters:
         username (str): The username to your account
         password (str): Password to the account
 
-    Returns
-    -------
-        Union[AuthorizedUser, bool]: If user is authorised then it returns the user if not it returns False
+    Returns:
+        AuthorizedUser | bool: If user is authorised then it returns the user if not it returns False
     """
     user = await get_user(username)  # check if user exists
     if user is None:
@@ -129,13 +121,15 @@ async def authenticate_user(username: str, password: str) -> AuthorizedUser | bo
 
 
 @oauth2_endpoint.post("/token", response_model=Token)
-async def login_for_access_token(request: Request, form_data: OAuth2PasswordRequestForm = Depends()):
+async def login_for_access_token(
+    request: Request, form_data: OAuth2PasswordRequestForm = Depends()
+):
     """
     Request an oauth2 access token
 
-    Requirements
-    ------------
-        username & password to the account
+    Parameters:
+        username (str): Username to the account
+        password (str): Password to the account
     """
     form_data.password = await hash_text(form_data.password)
     user = await authenticate_user(form_data.username, form_data.password)

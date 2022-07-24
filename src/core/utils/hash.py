@@ -15,14 +15,13 @@ load_dotenv()
 
 async def hash_text(text: str) -> str:
     """
-    Hashes text using pbkdf2_hmac and sha256 algorithm
+    Hashes text using pbkdf2_hmac and sha256 algorithm\n
+    This function will be mainly used for storing passwords in a safe and secure way
 
-    Parameters
-    ----------
+    Parameters:
         text (str): The text to hash
 
-    Returns
-    -------
+    Returns:
         str: The hashed output of the function
     """
     SALT = (

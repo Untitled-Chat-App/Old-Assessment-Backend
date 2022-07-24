@@ -15,18 +15,18 @@ dotenv.load_dotenv()
 
 
 @asynccontextmanager
-async def asyncpg_connect(database_url: Optional[str] = None):
+async def asyncpg_connect(
+    database_url: Optional[str] = None,
+) -> asyncpg.connection.Connection:
     """
     Custom context manager to use asyncpg
     Very useful to ensure that once I open a connection it will ALWAYS be closed even upon error
 
-    Parameters
-    ----------
-        database_url (str, Optional): If not provided it will use the DATABASE_URL
+    Parameters:
+        database_url (Optional[str]): If not provided it will use the DATABASE_URL
             from the .env file as the link to the db
 
-    Returns
-    -------
+    Yeilds:
         asyncpg.connection.Connection: The connection to the database
     """
     if database_url is None:

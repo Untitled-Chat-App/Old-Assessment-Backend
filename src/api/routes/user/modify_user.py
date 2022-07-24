@@ -4,14 +4,14 @@ Code for the endpoint to update a user or delete them
 
 __all__ = ["get_user_endpoint"]
 
-from fastapi import Depends, APIRouter, HTTPException, Request
 from pydantic import BaseModel
 from fastapi.responses import JSONResponse
+from fastapi import Depends, APIRouter, HTTPException, Request
 
+from core.utils import hash_text
 from ...auth import check_auth_token
 from core.models import AuthorizedUser
 from core.database import get_user_by_id, asyncpg_connect
-from core.utils import hash_text
 
 
 other_user_endpoints = APIRouter()

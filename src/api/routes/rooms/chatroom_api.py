@@ -11,7 +11,7 @@ from fastapi import APIRouter, Depends, HTTPException, Request
 
 from ...auth import check_auth_token
 from core.database import asyncpg_connect, get_room
-from core.models import AuthorizedUser, Room, RoomMessage, RoomUser, ChatRoom, NewRoom
+from core.models import AuthorizedUser, NewRoom
 
 
 chatroom_endpoints = APIRouter()

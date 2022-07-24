@@ -14,9 +14,9 @@ from fastapi import (
     WebSocketDisconnect,
 )
 
+from core.database import get_room
 from ...auth import check_auth_token
-from core.database import get_user_by_id, asyncpg_connect, get_room
-from core.models import AuthorizedUser, Room, RoomMessage, RoomUser, ChatRoom
+from core.models import RoomMessage, RoomUser, ChatRoom
 
 
 chatroom_websockets = APIRouter()

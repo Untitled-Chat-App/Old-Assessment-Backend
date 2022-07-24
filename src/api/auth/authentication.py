@@ -14,8 +14,8 @@ from fastapi import Depends, APIRouter, HTTPException, status, Request
 from fastapi.security import OAuth2PasswordBearer, OAuth2PasswordRequestForm
 
 from core.utils import hash_text
-from core.database import asyncpg_connect, get_user_by_id, get_user
-from core.models import Token, AuthPerms, AuthorizedUser
+from core.database import get_user
+from core.models import Token, AuthorizedUser
 
 load_dotenv()
 

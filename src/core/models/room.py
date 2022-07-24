@@ -1,4 +1,7 @@
-import json
+""" (module)
+Classes for chatrooms
+"""
+
 from dataclasses import dataclass
 
 from fastapi import WebSocket

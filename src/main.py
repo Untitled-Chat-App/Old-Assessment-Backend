@@ -52,7 +52,7 @@ async def home(request: Request):
     """
     # return RedirectResponse("/docs")÷
 
-    with open("../testing/demo.html") as f:
+    with open("../testing/demo/index.html") as f:
         data = f.read()
     return HTMLResponse(content=data)
 

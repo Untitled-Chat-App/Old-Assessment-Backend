@@ -98,11 +98,8 @@ async def update_user_data(
             },
         )
 
-    return JSONResponse(
-        {
-            "result": "New user created successfully",
-            "new_user": updated_user,
-            "old_user": user,
-        },
-        200,
-    )
+    return {
+        "result": "User updated successfully",
+        "new_user": updated_user,
+        "old_user": user,
+    }

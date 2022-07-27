@@ -105,7 +105,7 @@ async def update_user_data(
     }
 
 
-@other_user_endpoints.patch("/api/users/me")
+@other_user_endpoints.patch("/api/user/me")
 async def update_user_auth_data(
     request: Request,
     update_details: UpdateBody,

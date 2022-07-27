@@ -106,7 +106,7 @@ async def update_user_data(
 
 
 @other_user_endpoints.patch("/api/users/me")
-async def update_user_data(
+async def update_user_auth_data(
     request: Request,
     update_details: UpdateBody,
     user: AuthorizedUser = Depends(check_auth_token),

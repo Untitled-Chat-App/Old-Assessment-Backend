@@ -103,3 +103,72 @@ async def update_user_data(
         "new_user": updated_user,
         "old_user": user,
     }
+
+
+@other_user_endpoints.patch("/api/users/me")
+async def update_user_data(
+    request: Request,
+    update_details: UpdateBody,
+    user: AuthorizedUser = Depends(check_auth_token),
+):
+    """
+    Update signed in user in the database
+
+    Parameters:
+        update_details {
+            attribute (str): The attribute of the user you want to modify (eg "username")
+            new_value (str|int|bool): The new value of that attribute
+        }
+    """
+    OPTIONS = list(AuthorizedUser.__fields__.keys())
+    OPTIONS.remove("user_id")
+    OPTIONS.remove("permissions")
+
+    if update_details.attribute not in OPTIONS:
+        return HTTPException(
+            status_code=400,
+            detail={"error": "Invalid attribute provided.", "options": OPTIONS},
+        )
+
+    if user is None:
+        return HTTPException(
+            status_code=404,
+            detail={
+                "error": "User with id provided does not exist"
+            },
+        )
+
+    if update_details.attribute == "password":
+        password = await hash_text(update_details.new_value)
+
+        async with asyncpg_connect() as conn:
+            async with conn.transaction():
+                await conn.execute(
+                    "UPDATE Users Set password=$1 WHERE user_id=$2", password, user.user_id
+                )
+
+    elif update_details.attribute in ["email", "public_key", "username"]:
+        async with asyncpg_connect() as conn:
+            async with conn.transaction():
+                await conn.execute(
+                    f"UPDATE Users Set {update_details.attribute}=$1 WHERE user_id=$2",
+                    update_details.new_value,
+                    user.user_id,
+                )
+
+    updated_user = await get_user_by_id(user.user_id)
+
+    if updated_user == user:
+        return HTTPException(
+            status_code=500,
+            detail={
+                "error": "An error occured on the server side when updating the user",
+                "what_err": "idk man Im trYING My besT herE",
+            },
+        )
+
+    return {
+        "result": "User updated successfully",
+        "new_user": updated_user,
+        "old_user": user,
+    }

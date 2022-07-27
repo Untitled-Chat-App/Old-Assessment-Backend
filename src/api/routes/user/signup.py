@@ -7,6 +7,8 @@ __all__ = ["signup_endpoint"]
 import random
 
 from fastapi import Depends, APIRouter, HTTPException, Request
+from slowapi import Limiter
+from slowapi.util import get_remote_address
 
 from core.utils import hash_text
 from core.database import asyncpg_connect
@@ -15,13 +17,16 @@ from core.models import NewUser, AuthorizedUser
 
 
 signup_endpoint = APIRouter()
+# Need limiter here because these endpoints have different limit
+limiter = Limiter(key_func=get_remote_address)
 
 
+@limiter.limit("1/hour")
 @signup_endpoint.post("/api/users/signup")
 async def create_account(
     request: Request,
     user_data: NewUser,
-    auth_user: AuthorizedUser = Depends(check_auth_token),
+    # auth_user: AuthorizedUser = Depends(check_auth_token),
 ):
     """
     Create a new user. Used when someone is signing up to the app.
@@ -32,14 +37,14 @@ async def create_account(
         password (str): The new users password
         public_key (str): The new users public_key
     """
-    if (
-        auth_user.permissions.create_users != True
-    ):  # if they dont have the permissions to create users
-        return HTTPException(
-            status_code=403,
-            detail="You don't have permission to use this endpoint (skill issue)",
-            headers={"WWW-Authenticate": "Bearer"},
-        )
+    # if (
+    #     auth_user.permissions.create_users != True
+    # ):  # if they dont have the permissions to create users
+    #     return HTTPException(
+    #         status_code=403,
+    #         detail="You don't have permission to use this endpoint (skill issue)",
+    #         headers={"WWW-Authenticate": "Bearer"},
+    #     )
 
     user = await get_user(
         user_data.username

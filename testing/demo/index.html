@@ -203,7 +203,7 @@
         window.addEventListener("load", async function (event) {
             var username = prompt("Enter username", username);
             var password = prompt("Enter password", password);
-            var room_id = prompt("Enter password", room_id);
+            var room_id = prompt("Enter room id", room_id);
 
             let token = await getAccessToken(username, password)
             room_data = await getRoomById(room_id, token)

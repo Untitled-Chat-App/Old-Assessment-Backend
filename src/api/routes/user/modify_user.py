@@ -133,9 +133,7 @@ async def update_user_auth_data(
     if user is None:
         return HTTPException(
             status_code=404,
-            detail={
-                "error": "User with id provided does not exist"
-            },
+            detail={"error": "User with id provided does not exist"},
         )
 
     if update_details.attribute == "password":
@@ -144,7 +142,9 @@ async def update_user_auth_data(
         async with asyncpg_connect() as conn:
             async with conn.transaction():
                 await conn.execute(
-                    "UPDATE Users Set password=$1 WHERE user_id=$2", password, user.user_id
+                    "UPDATE Users Set password=$1 WHERE user_id=$2",
+                    password,
+                    user.user_id,
                 )
 
     elif update_details.attribute in ["email", "public_key", "username"]:

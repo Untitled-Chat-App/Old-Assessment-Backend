@@ -45,10 +45,6 @@ async def connect_ws(websocket: WebSocket, access_token: str, room_id: int):
         await websocket.accept()
         return await websocket.close(reason="Error: Invalid Room ID")
 
-    if user.permissions.join_rooms != True:
-        await websocket.accept()
-        return await websocket.close(reason="Error: You don't have the permissions to perform this request. Permission_needed: 'join_rooms'")
-
     connection = RoomUser(user=user, websocket=websocket)
 
     chatroom = rooms.get(room_id)

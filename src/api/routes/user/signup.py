@@ -37,14 +37,6 @@ async def create_account(
         password (str): The new users password
         public_key (str): The new users public_key
     """
-    # if (
-    #     auth_user.permissions.create_users != True
-    # ):  # if they dont have the permissions to create users
-    #     return HTTPException(
-    #         status_code=403,
-    #         detail="You don't have permission to use this endpoint (skill issue)",
-    #         headers={"WWW-Authenticate": "Bearer"},
-    #     )
 
     user = await get_user(
         user_data.username

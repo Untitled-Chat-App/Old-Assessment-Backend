@@ -28,7 +28,7 @@ async def get_user_with_user_id(
         user_id (int): The user ID of the user to fetch
     """
     if (
-        auth_user.permissions.get_user_details != True
+        auth_user.permissions.get_other_users != True
     ):  # if they dont have the permissions to create users
         return HTTPException(
             status_code=403,
@@ -59,7 +59,7 @@ async def get_all_users(
     Get all of the users HAHAHAHAA
     """
     if (
-        auth_user.permissions.get_user_details != True
+        auth_user.permissions.get_other_users != True
     ):  # if they dont have the permissions to create users
         return HTTPException(
             status_code=403,
@@ -73,39 +73,24 @@ async def get_all_users(
     users: list[AuthorizedUser] = []
 
     for data in database_user_data:
-        perms = AuthPerms(
-            # Normal user perms aka get good skill gap imagine not having perms
-            get_user_details=True,
-            update_user_details=True,
-            get_messages=True,
-            send_messages=True,
-            # Admin perms
-            create_users=False,
-            delete_users=False,
-            update_users=False,
-        )
+        perms = AuthPerms()
         if data[4] == 23:  # asked friend for random number
+            perms.delete_self = True
+            perms.create_rooms = True
+            perms.ban_users = True
+            perms.unban_users = True
             perms.create_users = True
             perms.delete_users = True
             perms.update_users = True
 
-            user = AuthorizedUser(
-                username=data[1],
-                password=data[3],
-                email=data[2],
-                user_id=data[0],
-                public_key=data[5],
-                permissions=perms,
-            )
-        else:
-            user = AuthorizedUser(
-                username=data[1],
-                user_id=data[0],
-                password=data[3],
-                email=data[2],
-                public_key=data[5],
-                permissions=perms,
-            )
+        user = AuthorizedUser(
+            username=data[1],
+            user_id=data[0],
+            password=data[3],
+            email=data[2],
+            public_key=data[5],
+            permissions=perms,
+        )
 
         del user.password
         users.append(user)

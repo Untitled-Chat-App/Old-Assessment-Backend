@@ -61,17 +61,23 @@ class AuthPerms(BaseModel):
     """
 
     # User
-    get_user_details: bool
-    update_user_details: bool
+    get_self: bool = True
+    mofify_self: bool = True
+    delete_self: bool = False
 
-    # Messages
-    get_messages: bool
-    send_messages: bool
+    get_other_users: bool = True
+
+    # Chat rooms
+    join_rooms: bool = True
+    create_rooms: bool = False
 
     # Admin perms
-    create_users: bool
-    delete_users: bool
-    update_users: bool
+    ban_users: bool = False
+    unban_users: bool = False
+
+    create_users: bool = False
+    delete_users: bool = False
+    update_users: bool = False
 
 
 class AuthorizedUser(AuthUser):

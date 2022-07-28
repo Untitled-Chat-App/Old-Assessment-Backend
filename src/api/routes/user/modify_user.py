@@ -5,7 +5,6 @@ Code for the endpoint to update a user or delete them
 __all__ = ["get_user_endpoint"]
 
 from pydantic import BaseModel
-from fastapi.responses import JSONResponse
 from fastapi import Depends, APIRouter, HTTPException, Request
 
 from core.utils import hash_text
@@ -54,7 +53,7 @@ async def update_user_data(
             status_code=403,
             detail={
                 "error": "You don't have the permissions to perform this request.",
-                "permission_needed": {"update_users": True},
+                "permission_needed": ["update_users"],
             },
         )
 
@@ -128,6 +127,15 @@ async def update_user_auth_data(
         return HTTPException(
             status_code=400,
             detail={"error": "Invalid attribute provided.", "options": OPTIONS},
+        )
+
+    if user.permissions.mofify_self != True:
+        return HTTPException(
+            status_code=403,
+            detail={
+                "error": "You don't have the permissions to perform this request.",
+                "permission_needed": ["mofify_self"],
+            },
         )
 
     if user is None:

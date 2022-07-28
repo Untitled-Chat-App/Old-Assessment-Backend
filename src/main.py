@@ -11,7 +11,7 @@ from fastapi import Depends
 from dotenv import load_dotenv
 
 from fastapi import Request
-from fastapi.responses import HTMLResponse
+from fastapi.responses import HTMLResponse, RedirectResponse
 from fastapi.middleware.cors import CORSMiddleware
 
 from api.routes import (
@@ -45,16 +45,22 @@ app.add_middleware(
 )
 
 
+@app.get("/demo")
+async def home(request: Request):
+    """
+    The demo page
+    """
+    with open("../testing/demo/index.html") as f:
+        data = f.read()
+    return HTMLResponse(content=data)
+
+
 @app.get("/")
 async def home(request: Request):
     """
     The home page, Redirects to docs
     """
-    # return RedirectResponse("/docs")÷
-
-    with open("../testing/demo/index.html") as f:
-        data = f.read()
-    return HTMLResponse(content=data)
+    return RedirectResponse("/docs")
 
 
 @app.get("/api/user/me")

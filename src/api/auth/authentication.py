@@ -9,11 +9,12 @@ from typing import Optional
 from datetime import datetime, timedelta
 
 from dotenv import load_dotenv
+from pydantic import SecretStr
 from jose import JWTError, jwt
-from fastapi import Depends, APIRouter, HTTPException, status, Request
+from argon2 import PasswordHasher
+from fastapi import Depends, APIRouter, HTTPException, status, Request, Form
 from fastapi.security import OAuth2PasswordBearer, OAuth2PasswordRequestForm
 
-from core.utils import hash_text
 from core.database import get_user
 from core.models import Token, AuthorizedUser
 
@@ -25,18 +26,37 @@ oauth2_scheme = OAuth2PasswordBearer(
 )  # set the /token endpoint as the oauth2 endpoint
 
 
-async def correct_password(hashed_password: str, db_password: str) -> bool:
+class CustomOAuth2PasswordRequestForm(OAuth2PasswordRequestForm):
+    def __init__(
+            self,
+            username: str = Form(...),
+            password: SecretStr = Form(...),
+            scope: str = Form(""),
+    ):
+        super().__init__(
+            username=username,
+            password=password,
+            scope=scope,
+        )
+
+
+async def correct_password(password: str, db_password: str) -> bool:
     """
-    Very simple function to check if input1 == input2
+    Very simple function to check if entered password is correct
 
     Parameters:
-        hashed_password (str): The password that was entered by the user
+        password (str): The password that was entered by the user
         db_password (str): The real password that in the db
 
     Returns:
         bool: True/False if they password is correct
     """
-    return hashed_password == db_password
+    password_hasher = PasswordHasher()
+    try:
+        password_hasher.verify(db_password, password)
+        return True
+    except Exception:
+        return False
 
 
 async def create_access_token(
@@ -61,6 +81,7 @@ async def create_access_token(
             minutes=15
         )  # if not provided time then set to 15min
     to_encode.update({"exp": expire})  # add in expiry time
+
     encoded_jwt = jwt.encode(to_encode, os.environ["JWT_SIGN"], algorithm="HS256")
     return encoded_jwt
 
@@ -85,7 +106,8 @@ async def check_auth_token(token: str = Depends(oauth2_scheme)) -> AuthorizedUse
         payload = jwt.decode(
             token, os.environ["JWT_SIGN"], algorithms=["HS256"]
         )  # decode token
-        username: str = payload.get("sub")
+        username: str = payload.get("username")
+        scopes = payload.get("scopes")
         if username is None:
             raise credentials_exception
     except JWTError:
@@ -96,6 +118,14 @@ async def check_auth_token(token: str = Depends(oauth2_scheme)) -> AuthorizedUse
     )  # get user from the username that was in the token and check if they exist
     if user is None:
         raise credentials_exception
+
+    # aditional scopes
+    if "delete_self" in scopes:
+        user.permissions.delete_self = True
+    if "create_rooms" in scopes:
+        user.permissions.create_rooms = True
+
+    # return the user if correct token
     return user
 
 
@@ -122,7 +152,7 @@ async def authenticate_user(username: str, password: str) -> AuthorizedUser | bo
 
 @oauth2_endpoint.post("/token", response_model=Token)
 async def login_for_access_token(
-    request: Request, form_data: OAuth2PasswordRequestForm = Depends()
+    request: Request, form_data: CustomOAuth2PasswordRequestForm = Depends()
 ):
     """
     Request an oauth2 access token
@@ -131,8 +161,19 @@ async def login_for_access_token(
         username (str): Username to the account
         password (str): Password to the account
     """
-    form_data.password = await hash_text(form_data.password)
-    user = await authenticate_user(form_data.username, form_data.password)
+    user = await authenticate_user(form_data.username, form_data.password.get_secret_value())
+
+    scopes = form_data.scopes
+
+    if scopes:
+        extra_scope_options = [
+            "delete_self",
+            "create_rooms",
+        ]
+        for i in scopes:
+            if i not in extra_scope_options:
+                scopes.remove(i)
+
     if not user:
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
@@ -141,7 +182,8 @@ async def login_for_access_token(
         )
     access_token_expires = timedelta(minutes=1440)  # you only get a day
     access_token = await create_access_token(
-        data={"sub": user.username}, expires_delta=access_token_expires
+        data={"username": user.username, "scopes": scopes},
+        expires_delta=access_token_expires,
     )
     return {"access_token": access_token, "token_type": "bearer"}
 

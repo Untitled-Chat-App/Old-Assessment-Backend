@@ -82,30 +82,19 @@ async def get_user_by_id(user_id: int) -> Optional[AuthorizedUser]:
         if not len(data):
             return None
 
-    perms = AuthPerms(
-        # Normal user perms aka get good skill gap imagine not having perms
-        get_user_details=True,
-        update_user_details=True,
-        get_messages=True,
-        send_messages=True,
-        # Admin perms
-        create_users=False,
-        delete_users=False,
-        update_users=False,
-    )
+    perms = (
+        AuthPerms()
+    )  # Normal user perms aka get good skill gap imagine not having perms
+    
     if data[0][4] == 23:  # asked friend for random number
+        perms.delete_self = True
+        perms.create_rooms = True
+        perms.ban_users = True
+        perms.unban_users = True
         perms.create_users = True
         perms.delete_users = True
         perms.update_users = True
 
-        return AuthorizedUser(
-            username=data[0][1],
-            password=data[0][3],
-            email=data[0][2],
-            user_id=data[0][0],
-            public_key=data[0][5],
-            permissions=perms,
-        )
     return AuthorizedUser(
         username=data[0][1],
         user_id=data[0][0],

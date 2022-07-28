@@ -33,6 +33,15 @@ async def create_new_chatroom(
     room_name = room_data.room_name
     room_description = room_data.room_description
 
+    if auth_user.permissions.create_rooms != True:
+        return HTTPException(
+            status_code=403,
+            detail={
+                "error": "You don't have the permissions to perform this request.",
+                "permission_needed": ["create_rooms"],
+            },
+        )
+
     if await get_room(room_name=room_name) is not None:
         raise HTTPException(status_code=409, detail="Room already exists")
 

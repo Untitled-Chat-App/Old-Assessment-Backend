@@ -3,7 +3,10 @@
 ---
 
 ## Table Of Contents
-e
+
+* [Introduction](#introduction)
+* [Authentication & Authorization](#authentication--authorization)
+* [User Permissions](#user-permissions)
 
 ---
 
@@ -17,9 +20,6 @@ Also most endpoints will require Authentication/Authorization with OAuth JWT bea
 
 ### Examples format:
 For each endpoint I will include the type of, and what data you will need to use for the request, an example response, if the endpoint it requires authentication, rate limits and more aditional information you might need when using it.   
-
-**The code/design**  
-Also i will include a drop down read more section where i will briefly explain how the endpoint works (on the code side) and why I made a certain decision.  
 
 **Format for example parameters/arguments:**  
 Another thing to note is that if I say something like `[username]` you need to replace the username with your actual username. If a parameter/argument is wrapped with angled brackets (`<argument>`) that means that it is required. If it is optional it will be wrapped in square brackets (`[argument]`)
@@ -104,22 +104,6 @@ curl -X 'GET' \
   -H 'accept: application/json' \
   -H 'Authorization: Bearer super_secret_access_token'
 ```
-
-
-## How it works:
-<details open >
-will write later
-Things to talk about
-
-Hashing  
-JWT tokens / their payload / why i used them  
-How user is authenticated  
-Encryption  
-Fastapi  
-
-
-</details>
-
 ---
 
 ## User Permissions

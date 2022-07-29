@@ -34,6 +34,12 @@ This is the base url for all requests:
 
 I will include only the part after so if I write [`/api/user/me`](https://chatapi.fusionsid.xyz/api/user/me) The full URL of the endpoint will be at https://chatapi.fusionsid.xyz/api/user/me
 
+**Encryption**  
+All services and protocols (REST & WebSocket) within the API are using TLS and HTTPS/WSS.
+
+**Aditional Cloudflare Security**  
+I also use cloudflare as a middle man for requests. This helps with caching, security because they have functions for that, anylytics and more
+
 ---
 
 ## Authentication & Authorization
@@ -98,6 +104,21 @@ curl -X 'GET' \
   -H 'accept: application/json' \
   -H 'Authorization: Bearer super_secret_access_token'
 ```
+
+
+## How it works:
+<details open >
+will write later
+Things to talk about
+
+Hashing  
+JWT tokens / their payload / why i used them  
+How user is authenticated  
+Encryption  
+Fastapi  
+
+
+</details>
 
 ---
 

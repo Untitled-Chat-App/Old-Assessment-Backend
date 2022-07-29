@@ -2,9 +2,10 @@
 
 ---
 
-## Table Of Contents
+## Contents
 
 * [Introduction](#introduction)
+* [Base URL](#base-url)
 * [Authentication & Authorization](#authentication--authorization)
 * [User Permissions](#user-permissions)
 

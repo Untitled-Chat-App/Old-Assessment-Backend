@@ -15,7 +15,7 @@ from argon2 import PasswordHasher
 from fastapi import Depends, APIRouter, HTTPException, status, Request, Form
 from fastapi.security import OAuth2PasswordBearer, OAuth2PasswordRequestForm
 
-from core.database import get_user
+from core.database import get_user, get_user_by_id
 from core.models import Token, AuthorizedUser
 
 load_dotenv()
@@ -106,16 +106,16 @@ async def check_auth_token(token: str = Depends(oauth2_scheme)) -> AuthorizedUse
         payload = jwt.decode(
             token, os.environ["JWT_SIGN"], algorithms=["HS256"]
         )  # decode token
-        username: str = payload.get("username")
+        user_id: str = payload.get("user_id")
         scopes = payload.get("scopes")
-        if username is None:
+        if user_id is None:
             raise credentials_exception
     except JWTError:
         raise credentials_exception
 
-    user = await get_user(
-        username=username
-    )  # get user from the username that was in the token and check if they exist
+    user = await get_user_by_id(
+        user_id=user_id
+    )  # get user from the user id that was in the token and check if they exist
     if user is None:
         raise credentials_exception
 
@@ -185,7 +185,7 @@ async def login_for_access_token(
         )
     access_token_expires = timedelta(minutes=1440)  # you only get a day
     access_token = await create_access_token(
-        data={"username": user.username, "scopes": scopes},
+        data={"user_id": user.user_id, "scopes": scopes},
         expires_delta=access_token_expires,
     )
     return {"access_token": access_token, "token_type": "bearer"}

@@ -350,6 +350,8 @@ curl -X 'GET' \
 }
 ```
 
+Try is out here: [Link](https://chatapi.fusionsid.xyz/docs#/default/me_api_user_me_get)
+
 ---
 
 ### Create new user/signup:
@@ -357,3 +359,9 @@ curl -X 'GET' \
 
 **Authentication not required for this endpoint**
 
+...
+
+
+Try is out here: [Link](https://chatapi.fusionsid.xyz/docs#/default/create_account_api_users_signup_post)
+
+---

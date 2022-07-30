@@ -85,9 +85,9 @@ This endpoint unlike most (that use application/json), uses `application/x-www-f
 Each user has a default set of permissions which is things they can do with the API (see Permissions section under Users for info on each one). If a user requires additional permissions that are not in the default set of permissions they can request them. This is done by adding the scopes wanted to the scopes parameter when requesting a token.
 
 **Scopes List:**   
-`"create_rooms"`: The ability to create chatrooms  
-`"delete_self"`: Permission to delete the current user/delete your own account
-`"mofify_self"`: Be able to modify your own account
+* `"create_rooms"`: The ability to create chatrooms  
+* `"delete_self"`: Permission to delete the current user/delete your own account  
+* `"mofify_self"`: Be able to modify your own account
 
 **Example Request:**
 ```bash

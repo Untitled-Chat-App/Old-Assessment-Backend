@@ -21,7 +21,7 @@
   * [Chatroom Attributes](#room-attributes)
 
 ### [Endpoints](#endpoints):
-
+* [Ratelimits](#ratelimits)
 * [User Endpoints](#user-endpoints)
   * [Get current user](#get-current-logged-in-user)
   * [Create new user](#create-new-usersignup)
@@ -43,7 +43,7 @@ For each endpoint I will include the type of, and what data you will need to use
 **Format for example parameters/arguments:**  
 Another thing to note is that if I say something like `[username]` you need to replace the username with your actual username. If a parameter/argument is wrapped with angled brackets (`<argument>`) that means that it is required. If it is optional it will be wrapped in square brackets (`[argument]`)
 
-Examples will be shown in [`curl`](https://en.wikipedia.org/wiki/CURL)
+**Example requests will be shown in [`curl`](https://en.wikipedia.org/wiki/CURL)**
 
 ## Base URL
 
@@ -51,10 +51,11 @@ This is the base url for all requests:
 
 [`https://chatapi.fusionsid.xyz/`](https://chatapi.fusionsid.xyz/)
 
-I will include only the part after so if I write [`/api/user/me`](https://chatapi.fusionsid.xyz/api/user/me) The full URL of the endpoint will be at https://chatapi.fusionsid.xyz/api/user/me
+In most examples I will include only the part after the base url.  
+**Example:** If I write [`/api/user/me`](https://chatapi.fusionsid.xyz/api/user/me), The full URL will be at https://chatapi.fusionsid.xyz/api/user/me
 
 **Encryption**  
-All services and protocols (REST & WebSocket) within the API are using TLS and HTTPS/WSS.
+All services and protocols (REST & WebSocket) within the API are using HTTPS and WSS which has TLS (Transport Layer Security) encryption.
 
 **Aditional Cloudflare Security**  
 I also use cloudflare as a middle man for requests. This helps with caching, security because they have functions for that, anylytics and more
@@ -86,6 +87,7 @@ Each user has a default set of permissions which is things they can do with the 
 **Scopes List:**   
 `"create_rooms"`: The ability to create chatrooms  
 `"delete_self"`: Permission to delete the current user/delete your own account
+`"mofify_self"`: Be able to modify your own account
 
 **Example Request:**
 ```bash
@@ -272,6 +274,27 @@ One of the features of this app is chatrooms. Chat rooms similar to irc rooms or
 ---
 
 # API Endpoints:
+
+---
+
+## Ratelimits
+
+All endpoints on this api have a default rate limit of 30 requests per minute.  
+If a specific endpoint has a different rate limit I will specify that in that endpoints section.
+
+If you make a request to the API after execding the rate limit you will get an error like this:
+
+```json
+// Status code: 429
+{
+  "error": "Rate limit exceeded: 30 per 1 minute"
+}
+```
+
+\*results may vary if the endpoint has a different limit
+
+If you exceede the limit. STOP WHAT YOURE DOING RIGHT NOW. why you spamming me. I dont like it. Also after the minute ends you can continue making your requests. Also imagine tryna spam and getting ratelimited (skill issue)
+
 
 ---
 

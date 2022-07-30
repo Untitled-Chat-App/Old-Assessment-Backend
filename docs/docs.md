@@ -11,6 +11,7 @@
   * [Format for endpoints](#format-for-endpoints)
 * [Authentication & Authorization](#authentication--authorization)
   * [Authentication](#authentication)
+  * [Access tokens](#access-tokens)
   * [Authorization](#authorization)
 * [Users](#users)
   * [User Object / Structure / Examples](#user-object)
@@ -111,6 +112,18 @@ curl -X 'POST' \
 **Note:**  
 If you dont want to request any scopes you can just do `&scope=`
 
+---
+
+### Access Tokens
+
+Access tokens for users are of type `Bearer`. This prefix should be include when the endpoint needs the token in the header (see authorization bellow).  
+
+The access tokens are JWT (json web tokens). They are signed so mofifying them automatically makes them invalid.  
+Payload of the token is user_id, scopes (if none empty list), and expiry time.
+
+#### Access tokens expire in 1440 minutes (24 hours / 1 day) after they were created.
+
+---
 
 ### Authorization:
 

@@ -38,7 +38,7 @@ Most endpoints will return and accept an [`application/json`](https://en.wikiped
 Also most endpoints will require Authentication/Authorization with OAuth JWT bearer tokens. 
 
 ### Format for endpoints:
-For each endpoint I will include the type of, and what data you will need to use for the request, an example response, if the endpoint it requires authentication, rate limits and more aditional information you might need when using it.   
+For each endpoint I will include the type of, and what data you will need to use for the request, an example response, if the endpoint it requires authentication, rate limits and more aditional information you might need when using it. I will also try to include a link to try out the endpoint.
 
 **Format for example parameters/arguments:**  
 Another thing to note is that if I say something like `[username]` you need to replace the username with your actual username. If a parameter/argument is wrapped with angled brackets (`<argument>`) that means that it is required. If it is optional it will be wrapped in square brackets (`[argument]`)
@@ -69,6 +69,8 @@ I also use cloudflare as a middle man for requests. This helps with caching, sec
 To be able to use most endpoints of this api you will require an access token. This can be obtained at the `/token` endpoint
 
 ### `POST: /token`
+
+### Try is out here: [Link](https://chatapi.fusionsid.xyz/docs#/default/login_for_access_token_token_post)
 
 This endpoint unlike most (that use application/json), uses `application/x-www-form-urlencoded` as the content type. So when submiting the details its done like `username=<username>&password=<password>&scope=[scopes]`
 
@@ -350,7 +352,7 @@ curl -X 'GET' \
 }
 ```
 
-Try is out here: [Link](https://chatapi.fusionsid.xyz/docs#/default/me_api_user_me_get)
+### Try is out here: [Link](https://chatapi.fusionsid.xyz/docs#/default/me_api_user_me_get)
 
 ---
 
@@ -362,6 +364,6 @@ Try is out here: [Link](https://chatapi.fusionsid.xyz/docs#/default/me_api_user_
 ...
 
 
-Try is out here: [Link](https://chatapi.fusionsid.xyz/docs#/default/create_account_api_users_signup_post)
+### Try is out here: [Link](https://chatapi.fusionsid.xyz/docs#/default/create_account_api_users_signup_post)
 
 ---

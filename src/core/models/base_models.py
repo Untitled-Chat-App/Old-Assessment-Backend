@@ -62,7 +62,7 @@ class AuthPerms(BaseModel):
 
     # User
     get_self: bool = True
-    mofify_self: bool = True
+    mofify_self: bool = False
     delete_self: bool = False
 
     get_other_users: bool = True

@@ -124,6 +124,8 @@ async def check_auth_token(token: str = Depends(oauth2_scheme)) -> AuthorizedUse
         user.permissions.delete_self = True
     if "create_rooms" in scopes:
         user.permissions.create_rooms = True
+    if "mofify_self" in scopes:
+        user.permissions.mofify_self = True
 
     # return the user if correct token
     return user
@@ -169,6 +171,7 @@ async def login_for_access_token(
         extra_scope_options = [
             "delete_self",
             "create_rooms",
+            "mofify_self",
         ]
         for i in scopes:
             if i not in extra_scope_options:

@@ -75,6 +75,7 @@ async def get_all_users(
     for data in database_user_data:
         perms = AuthPerms()
         if data[4] == 23:  # asked friend for random number
+            perms.mofify_self = True
             perms.delete_self = True
             perms.create_rooms = True
             perms.ban_users = True

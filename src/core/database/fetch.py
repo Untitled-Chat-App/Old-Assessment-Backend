@@ -87,6 +87,7 @@ async def get_user_by_id(user_id: int) -> Optional[AuthorizedUser]:
     )  # Normal user perms aka get good skill gap imagine not having perms
     
     if data[0][4] == 23:  # asked friend for random number
+        perms.mofify_self = True
         perms.delete_self = True
         perms.create_rooms = True
         perms.ban_users = True

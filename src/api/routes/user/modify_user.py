@@ -85,7 +85,8 @@ async def update_user_data(
         async with asyncpg_connect() as conn:
             async with conn.transaction():
                 await conn.execute(
-                    f"UPDATE Users Set {update_details.attribute}=$1 WHERE user_id=$2",
+                    "UPDATE Users Set $1=$2 WHERE user_id=$3",
+                    update_details.attribute,
                     update_details.new_value,
                     user_id,
                 )
@@ -163,7 +164,8 @@ async def update_user_auth_data(
         async with asyncpg_connect() as conn:
             async with conn.transaction():
                 await conn.execute(
-                    f"UPDATE Users Set {update_details.attribute}=$1 WHERE user_id=$2",
+                    "UPDATE Users Set $1=$2 WHERE user_id=$3",
+                    update_details.attribute,
                     update_details.new_value,
                     user.user_id,
                 )

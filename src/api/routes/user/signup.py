@@ -16,7 +16,9 @@ from ...auth import check_auth_token, get_user
 from core.models import NewUser, AuthorizedUser
 
 
-signup_endpoint = APIRouter()
+signup_endpoint = APIRouter(tags=[
+        "Users",
+    ])
 # Need limiter here because these endpoints have different limit
 limiter = Limiter(key_func=get_remote_address)
 

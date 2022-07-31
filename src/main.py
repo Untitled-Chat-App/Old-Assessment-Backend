@@ -27,8 +27,8 @@ from api.auth import oauth2_endpoint, check_auth_token
 load_dotenv()
 app = Chat_API()
 
-app.include_router(signup_endpoint)
 app.include_router(oauth2_endpoint)
+app.include_router(signup_endpoint)
 app.include_router(get_user_endpoint)
 app.include_router(chatroom_websockets)
 app.include_router(chatroom_endpoints)
@@ -45,7 +45,7 @@ app.add_middleware(
 )
 
 
-@app.get("/demo")
+@app.get("/demo", tags=["Non API / Other"])
 async def home(request: Request):
     """
     The demo page
@@ -55,7 +55,7 @@ async def home(request: Request):
     return HTMLResponse(content=data)
 
 
-@app.get("/")
+@app.get("/", tags=["Non API / Other"])
 async def home(request: Request):
     """
     The home page, Redirects to docs
@@ -63,7 +63,7 @@ async def home(request: Request):
     return RedirectResponse("/docs")
 
 
-@app.get("/api/user/me")
+@app.get("/api/user/me", tags=["Users"])
 async def me(request: Request, user: AuthorizedUser = Depends(check_auth_token)):
     """
     Quick endpoint to check if youre logged in

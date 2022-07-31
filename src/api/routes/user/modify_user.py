@@ -13,7 +13,9 @@ from core.models import AuthorizedUser
 from core.database import get_user_by_id, asyncpg_connect
 
 
-other_user_endpoints = APIRouter()
+other_user_endpoints = APIRouter(tags=[
+        "Users",
+    ])
 
 
 class UpdateBody(BaseModel):

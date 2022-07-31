@@ -12,7 +12,9 @@ from core.models import AuthorizedUser, AuthPerms
 from core.database import get_user_by_id, asyncpg_connect
 
 
-get_user_endpoint = APIRouter()
+get_user_endpoint = APIRouter(tags=[
+        "Users",
+    ])
 
 
 @get_user_endpoint.get("/api/users/{user_id}")
@@ -51,7 +53,7 @@ async def get_user_with_user_id(
     return user
 
 
-@get_user_endpoint.get("/api/getAllUsers")
+@get_user_endpoint.get("/api/users/getAllUsers")
 async def get_all_users(
     request: Request, auth_user: AuthorizedUser = Depends(check_auth_token)
 ):

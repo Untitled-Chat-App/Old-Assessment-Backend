@@ -10,6 +10,10 @@ from slowapi.errors import RateLimitExceeded
 from slowapi.middleware import SlowAPIMiddleware
 from slowapi import Limiter, _rate_limit_exceeded_handler
 
+DESCRIPTION = """
+### API/Backend for chat app
+"""
+
 
 class Chat_API(FastAPI):
     """
@@ -20,7 +24,8 @@ class Chat_API(FastAPI):
         super().__init__()
         # Docs config
         self.title = "Untitled-Chat API"
-        self.description = "### API/Backend for chat app"
+        self.version = "0.0.1"
+        self.description = DESCRIPTION
         self.license_info = {
             "name": "MIT",
             "url": "https://opensource.org/licenses/MIT",

@@ -20,7 +20,12 @@ from core.models import Token, AuthorizedUser
 
 load_dotenv()
 
-oauth2_endpoint = APIRouter()
+
+oauth2_endpoint = APIRouter(
+    tags=[
+        "Get access token",
+    ]
+)
 oauth2_scheme = OAuth2PasswordBearer(
     tokenUrl="token"
 )  # set the /token endpoint as the oauth2 endpoint
@@ -28,10 +33,10 @@ oauth2_scheme = OAuth2PasswordBearer(
 
 class CustomOAuth2PasswordRequestForm(OAuth2PasswordRequestForm):
     def __init__(
-            self,
-            username: str = Form(...),
-            password: SecretStr = Form(...),
-            scope: str = Form(""),
+        self,
+        username: str = Form(...),
+        password: SecretStr = Form(...),
+        scope: str = Form(""),
     ):
         super().__init__(
             username=username,
@@ -163,7 +168,9 @@ async def login_for_access_token(
         username (str): Username to the account
         password (str): Password to the account
     """
-    user = await authenticate_user(form_data.username, form_data.password.get_secret_value())
+    user = await authenticate_user(
+        form_data.username, form_data.password.get_secret_value()
+    )
 
     scopes = form_data.scopes
 

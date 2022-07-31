@@ -43,13 +43,13 @@ async def update_user_data(
     OPTIONS.remove("permissions")
 
     if update_details.attribute not in OPTIONS:
-        return HTTPException(
+        raise HTTPException(
             status_code=400,
             detail={"error": "Invalid attribute provided.", "options": OPTIONS},
         )
 
     if auth_user.permissions.update_users != True:
-        return HTTPException(
+        raise HTTPException(
             status_code=403,
             detail={
                 "error": "You don't have the permissions to perform this request.",
@@ -60,7 +60,7 @@ async def update_user_data(
     user = await get_user_by_id(user_id)
 
     if user is None:
-        return HTTPException(
+        raise HTTPException(
             status_code=404,
             detail={
                 "error": "User with id provided does not exist",
@@ -89,7 +89,7 @@ async def update_user_data(
     updated_user = await get_user_by_id(user_id)
 
     if updated_user == user:
-        return HTTPException(
+        raise HTTPException(
             status_code=500,
             detail={
                 "error": "An error occured on the server side when updating the user",
@@ -124,13 +124,13 @@ async def update_user_auth_data(
     OPTIONS.remove("permissions")
 
     if update_details.attribute not in OPTIONS:
-        return HTTPException(
+        raise HTTPException(
             status_code=400,
             detail={"error": "Invalid attribute provided.", "options": OPTIONS},
         )
 
     if user.permissions.mofify_self != True:
-        return HTTPException(
+        raise HTTPException(
             status_code=403,
             detail={
                 "error": "You don't have the permissions to perform this request.",
@@ -139,7 +139,7 @@ async def update_user_auth_data(
         )
 
     if user is None:
-        return HTTPException(
+        raise HTTPException(
             status_code=404,
             detail={"error": "User with id provided does not exist"},
         )
@@ -167,7 +167,7 @@ async def update_user_auth_data(
     updated_user = await get_user_by_id(user.user_id)
 
     if updated_user == user:
-        return HTTPException(
+        raise HTTPException(
             status_code=500,
             detail={
                 "error": "An error occured on the server side when updating the user",

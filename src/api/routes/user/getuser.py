@@ -30,7 +30,7 @@ async def get_user_with_user_id(
     if (
         auth_user.permissions.get_other_users != True
     ):  # if they dont have the permissions to create users
-        return HTTPException(
+        raise HTTPException(
             status_code=403,
             detail="You don't have permission to use this endpoint (skill issue)",
             headers={"WWW-Authenticate": "Bearer"},
@@ -43,7 +43,7 @@ async def get_user_with_user_id(
     del user.password
 
     if user is None:
-        return HTTPException(
+        raise HTTPException(
             status_code=409,
             detail="User with this username doesnt exists",
         )
@@ -61,7 +61,7 @@ async def get_all_users(
     if (
         auth_user.permissions.get_other_users != True
     ):  # if they dont have the permissions to create users
-        return HTTPException(
+        raise HTTPException(
             status_code=403,
             detail="You don't have permission to use this endpoint (skill issue)",
             headers={"WWW-Authenticate": "Bearer"},

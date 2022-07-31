@@ -43,7 +43,7 @@ async def create_account(
     )  # Check if someone has the same username/account already exists
 
     if user is not None:
-        return HTTPException(
+        raise HTTPException(
             status_code=409,
             detail="User with this username already exists",
         )
@@ -78,7 +78,7 @@ async def create_account(
         del user.password
         return {"success": True, "detail": "User created successfully", "user": user}
     # if not tell em you failed
-    return HTTPException(
+    raise HTTPException(
         status_code=500,
         detail="internal error lmao, user failed to be created. Maybe try again",
     )

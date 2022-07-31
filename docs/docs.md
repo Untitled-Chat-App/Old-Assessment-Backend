@@ -28,6 +28,7 @@
   * [Get current user](#get-current-logged-in-user)
   * [Create new user](#create-new-usersignup)
 
+Also if you want checkout the redoc url for a UI version of this with less detail: [Link to redoc](https://chatapi.fusionsid.xyz/redoc)
 
 ---
 
@@ -72,7 +73,7 @@ To be able to use most endpoints of this api you will require an access token. T
 
 ### `POST: /token`
 
-### Try is out here: [Link](https://chatapi.fusionsid.xyz/docs#/default/login_for_access_token_token_post)
+### Try is out here: [Link](https://chatapi.fusionsid.xyz/docs#/Get%20access%20token/login_for_access_token_token_post)
 
 This endpoint unlike most (that use application/json), uses `application/x-www-form-urlencoded` as the content type. So when submiting the details its done like `username=<username>&password=<password>&scope=[scopes]`
 
@@ -318,6 +319,10 @@ If you exceede the limit. STOP WHAT YOURE DOING RIGHT NOW. why you spamming me. 
 
 
 ---
+## Common Errors
+
+These are errors that you can get on pretty much all endpoints. This is why im gonna keep them all here so i dont have to put them in each endpoints section. If the endpoint has any aditional errors to be noted i wil include them in that endpoints section.
+
 
 ## Validation Error
 
@@ -376,6 +381,33 @@ In the response it will tell you what value was an incorrect value and what exac
 
 ---
 
+## Not authenticated error
+
+Most endpoints on this api require authorization.  
+If authorization has not been provided (bearer token not in Authorization header), you will an error.
+
+Example of a request which will give an error:
+
+**Invalid Request:**
+```bash
+curl -X 'GET' \
+  'https://chatapi.fusionsid.xyz/api/user/me' \
+  -H 'accept: application/json'
+```
+
+The reason this raises an error is because no token has been passed in.  
+So you get this:
+
+**Unsuccessful Response** 
+```json
+// status code: 401
+{
+  "detail": "Not authenticated"
+}
+```
+
+---
+
 ## User/Users endpoints:
 
 ---
@@ -414,26 +446,7 @@ curl -X 'GET' \
 }
 ```
 
-### Errors
-
-If no user is logged in (auth token has not been provided) It will return:
-
-**Invalid Request:**
-```bash
-curl -X 'GET' \
-  'https://chatapi.fusionsid.xyz/api/user/me' \
-  -H 'accept: application/json'
-```
-
-**Unsuccessful Response** 
-```json
-// status code: 401
-{
-  "detail": "Not authenticated"
-}
-```
-
-### Try the endpoint out here: [Link](https://chatapi.fusionsid.xyz/docs#/default/me_api_user_me_get)
+### Try the endpoint out here: [Link](https://chatapi.fusionsid.xyz/docs#/Users/me_api_user_me_get)
 
 ---
 
@@ -501,27 +514,115 @@ If you make a request and the username is the same as some user that already exi
 ```
 
 
-### Try the endpoint out here: [Link](https://chatapi.fusionsid.xyz/docs#/default/create_account_api_users_signup_post)
+### Try the endpoint out here: [Link](https://chatapi.fusionsid.xyz/docs#/Users/create_account_api_users_signup_post)
 
 ---
 
 
+### Get all users
+### `GET /api/users/getAllUsers`
 
+**Authentication required for this endpoint**
 
+This endpoint is used to get all users registered to the app / users in the database.  
+Its very simple and doesnt require and data passed to it (except auth).
 
+**Request Schema:**
 
+No data/parameters/arguments are needed for this endpoint
 
+**Request**  
+```bash
+curl -X 'GET' \
+  'https://chatapi.fusionsid.xyz/api/users/getAllUsers' \
+  -H 'accept: application/json' \
+  -H 'Authorization: Bearer <access token>'
+```
+ 
+**Example successful response:**
 
+If succesfull you will get a list of user objects
 
+```json
+[
+  {
+    "username": "string",
+    "password": "string",
+    "email": "string",
+    "permissions": {
+      "perm_name": boolean,
+      ...
+    },
+    "public_key": "string",
+    "user_id": integer
+  },
+  ...
+]
 
+```
 
-
-
+### Try the endpoint out here: [Link](https://chatapi.fusionsid.xyz/docs#/Users/get_all_users_api_users_getAllUsers_get)
 
 ---
 
-### Get user by user ID:
+### Get user by id:
 ### `GET /api/users/{user_id}`
+
+**Authentication required for this endpoint**
+
+This endpoint if for getting a user object by the id. It searches the database for another user who has the same id and if so it will return it. Since no 2 users can have the same id it will only return one user and if it cant find it, it will return an error.
+
+**Request Schema:**
+
+<img src="./images/get_user_by_id.jpg" alt="drawing" width="690" height="auto"/>
+
+user_id must be passed in the path and must be an integer.
+
+**Example Request**  
+```bash
+curl -X 'GET' \
+  'https://chatapi.fusionsid.xyz/api/users/690420690' \
+  -H 'accept: application/json' \
+  -H 'Authorization: Bearer <access token>'
+```
+ 
+**Example successful response:**
+
+If user is found you will get a user object:
+
+```json
+{
+    "username": "string",
+    "password": "string",
+    "email": "string",
+    "permissions": {
+      "perm_name": boolean,
+      ...
+    },
+    "public_key": "string",
+    "user_id": integer
+}
+```
+
+### Errors
+
+**Unsuccessful Response:**
+
+If user is not found you will get this error:
+
+```json
+{
+  "detail": "User with this id doesnt exists"
+}
+```
+
+### Try the endpoint out here: [Link](https://chatapi.fusionsid.xyz/docs#/Users/get_user_with_user_id_api_users__user_id__get)
+
+---
+
+
+<!-- ### :
+### ``
 
 **Authentication required for this endpoint**
 
@@ -550,167 +651,4 @@ If you make a request and the username is the same as some user that already exi
 
 ### Try the endpoint out here: [Link]()
 
----
-
-### Update specific user:
-### ``
-
-**Authentication not required for this endpoint**
-
-
-**Request Schema:**
-
-<img src="./images/" alt="drawing" width="690" height="auto"/>
-
-**Request**  
-```bash
-```
- 
-**Example successful response:**
-
-```json
-
-```
-
-### Errors
-
-**Unsuccessful Response:**
-
-```json
-```
-
-
-### Try the endpoint out here: [Link]()
-
----
-
-
-### get all users:
-### ``
-
-**Authentication not required for this endpoint**
-
-
-**Request Schema:**
-
-<img src="./images/" alt="drawing" width="690" height="auto"/>
-
-**Request**  
-```bash
-```
- 
-**Example successful response:**
-
-```json
-
-```
-
-### Errors
-
-**Unsuccessful Response:**
-
-```json
-```
-
-
-### Try the endpoint out here: [Link]()
-
----
-
-### :
-### ``
-
-**Authentication not required for this endpoint**
-
-
-**Request Schema:**
-
-<img src="./images/" alt="drawing" width="690" height="auto"/>
-
-**Request**  
-```bash
-```
- 
-**Example successful response:**
-
-```json
-
-```
-
-### Errors
-
-**Unsuccessful Response:**
-
-```json
-```
-
-
-### Try the endpoint out here: [Link]()
-
----
-
-
-### :
-### ``
-
-**Authentication not required for this endpoint**
-
-
-**Request Schema:**
-
-<img src="./images/" alt="drawing" width="690" height="auto"/>
-
-**Request**  
-```bash
-```
- 
-**Example successful response:**
-
-```json
-
-```
-
-### Errors
-
-**Unsuccessful Response:**
-
-```json
-```
-
-
-### Try the endpoint out here: [Link]()
-
----
-
-
-### :
-### ``
-
-**Authentication not required for this endpoint**
-
-
-**Request Schema:**
-
-<img src="./images/" alt="drawing" width="690" height="auto"/>
-
-**Request**  
-```bash
-```
- 
-**Example successful response:**
-
-```json
-
-```
-
-### Errors
-
-**Unsuccessful Response:**
-
-```json
-```
-
-
-### Try the endpoint out here: [Link]()
-
----
+--- -->

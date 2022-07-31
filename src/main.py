@@ -63,6 +63,14 @@ async def home(request: Request):
     return RedirectResponse("/docs")
 
 
+@app.get("/documentation", tags=["Non API / Other"])
+async def home(request: Request):
+    """
+    Actual docs for the endpoints
+    """
+    return RedirectResponse("https://github.com/Untitled-Chat-App/Backend/blob/main/docs/docs.md")
+
+
 @app.get("/api/user/me", tags=["Users"])
 async def me(request: Request, user: AuthorizedUser = Depends(check_auth_token)):
     """

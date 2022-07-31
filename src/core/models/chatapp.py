@@ -18,6 +18,8 @@ DESCRIPTION = """
 class Chat_API(FastAPI):
     """
     The custom subclass of FastAPI called Chat_API
+
+    [API docs](https://github.com/Untitled-Chat-App/Backend/blob/main/docs/docs.md)
     """
 
     def __init__(self) -> None:

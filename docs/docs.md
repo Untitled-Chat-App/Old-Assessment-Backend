@@ -376,7 +376,7 @@ In the response it will tell you what value was an incorrect value and what exac
 
 ---
 
-## User endpoints:
+## User/Users endpoints:
 
 ---
 
@@ -502,5 +502,215 @@ If you make a request and the username is the same as some user that already exi
 
 
 ### Try the endpoint out here: [Link](https://chatapi.fusionsid.xyz/docs#/default/create_account_api_users_signup_post)
+
+---
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+---
+
+### Get user by user ID:
+### `GET /api/users/{user_id}`
+
+**Authentication required for this endpoint**
+
+
+**Request Schema:**
+
+<img src="./images/" alt="drawing" width="690" height="auto"/>
+
+**Request**  
+```bash
+```
+ 
+**Example successful response:**
+
+```json
+
+```
+
+### Errors
+
+**Unsuccessful Response:**
+
+```json
+```
+
+
+### Try the endpoint out here: [Link]()
+
+---
+
+### Update specific user:
+### ``
+
+**Authentication not required for this endpoint**
+
+
+**Request Schema:**
+
+<img src="./images/" alt="drawing" width="690" height="auto"/>
+
+**Request**  
+```bash
+```
+ 
+**Example successful response:**
+
+```json
+
+```
+
+### Errors
+
+**Unsuccessful Response:**
+
+```json
+```
+
+
+### Try the endpoint out here: [Link]()
+
+---
+
+
+### get all users:
+### ``
+
+**Authentication not required for this endpoint**
+
+
+**Request Schema:**
+
+<img src="./images/" alt="drawing" width="690" height="auto"/>
+
+**Request**  
+```bash
+```
+ 
+**Example successful response:**
+
+```json
+
+```
+
+### Errors
+
+**Unsuccessful Response:**
+
+```json
+```
+
+
+### Try the endpoint out here: [Link]()
+
+---
+
+### :
+### ``
+
+**Authentication not required for this endpoint**
+
+
+**Request Schema:**
+
+<img src="./images/" alt="drawing" width="690" height="auto"/>
+
+**Request**  
+```bash
+```
+ 
+**Example successful response:**
+
+```json
+
+```
+
+### Errors
+
+**Unsuccessful Response:**
+
+```json
+```
+
+
+### Try the endpoint out here: [Link]()
+
+---
+
+
+### :
+### ``
+
+**Authentication not required for this endpoint**
+
+
+**Request Schema:**
+
+<img src="./images/" alt="drawing" width="690" height="auto"/>
+
+**Request**  
+```bash
+```
+ 
+**Example successful response:**
+
+```json
+
+```
+
+### Errors
+
+**Unsuccessful Response:**
+
+```json
+```
+
+
+### Try the endpoint out here: [Link]()
+
+---
+
+
+### :
+### ``
+
+**Authentication not required for this endpoint**
+
+
+**Request Schema:**
+
+<img src="./images/" alt="drawing" width="690" height="auto"/>
+
+**Request**  
+```bash
+```
+ 
+**Example successful response:**
+
+```json
+
+```
+
+### Errors
+
+**Unsuccessful Response:**
+
+```json
+```
+
+
+### Try the endpoint out here: [Link]()
 
 ---

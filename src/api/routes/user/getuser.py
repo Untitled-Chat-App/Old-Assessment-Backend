@@ -19,41 +19,6 @@ get_user_endpoint = APIRouter(
 )
 
 
-@get_user_endpoint.get("/api/users/{user_id}")
-async def get_user_with_user_id(
-    request: Request,
-    user_id: int,
-    auth_user: AuthorizedUser = Depends(check_auth_token),
-):
-    """
-    Get some users by their userid
-
-    Parameters:
-        user_id (int): The user ID of the user to fetch
-    """
-    if (
-        auth_user.permissions.get_other_users != True
-    ):  # if they dont have the permissions to create users
-        raise HTTPException(
-            status_code=403,
-            detail="You don't have permission to use this endpoint (skill issue)",
-            headers={"WWW-Authenticate": "Bearer"},
-        )
-
-    user = await get_user_by_id(
-        user_id
-    )  # Check if someone has the same username/account already exists
-
-    if user is None:
-        raise HTTPException(
-            status_code=409,
-            detail="User with this username doesnt exists",
-        )
-
-    del user.password
-    return user
-
-
 @get_user_endpoint.get("/api/users/getAllUsers")
 async def get_all_users(
     request: Request, auth_user: AuthorizedUser = Depends(check_auth_token)
@@ -100,3 +65,40 @@ async def get_all_users(
         users.append(user)
 
     return users
+
+    
+@get_user_endpoint.get("/api/users/{user_id}")
+async def get_user_with_user_id(
+    request: Request,
+    user_id: int,
+    auth_user: AuthorizedUser = Depends(check_auth_token),
+):
+    """
+    Get some users by their userid
+
+    Parameters:
+        user_id (int): The user ID of the user to fetch
+    """
+    if (
+        auth_user.permissions.get_other_users != True
+    ):  # if they dont have the permissions to create users
+        raise HTTPException(
+            status_code=403,
+            detail="You don't have permission to use this endpoint (skill issue)",
+            headers={"WWW-Authenticate": "Bearer"},
+        )
+
+    user = await get_user_by_id(
+        user_id
+    )  # Check if someone has the same username/account already exists
+
+    if user is None:
+        raise HTTPException(
+            status_code=409,
+            detail="User with this username doesnt exists",
+        )
+
+    del user.password
+    return user
+
+

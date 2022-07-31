@@ -23,6 +23,7 @@
 
 ### [Endpoints](#endpoints):
 * [Ratelimits](#ratelimits)
+* [Validation Error](#validation-error)
 * [User Endpoints](#user-endpoints)
   * [Get current user](#get-current-logged-in-user)
   * [Create new user](#create-new-usersignup)
@@ -375,7 +376,7 @@ In the response it will tell you what value was an incorrect value and what exac
 
 ---
 
-## User endpoints
+## User endpoints:
 
 ---
 

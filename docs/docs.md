@@ -22,7 +22,7 @@
   * [Chatroom Attributes](#room-attributes)
 
 ### [Endpoints](#endpoints):
-* [Ratelimits](#ratelimits)
+* [Rate limits](#ratelimits)
 * [Validation Error](#validation-error)
 * [User Endpoints](#user-endpoints)
   * [Get current user](#get-current-logged-in-user)
@@ -41,14 +41,14 @@ Also if you want checkout the redoc url for a UI version of this with less detai
 
 ## Introduction
 
-This is a [Websocket](https://en.wikipedia.org/wiki/WebSocket) and [REST](https://en.wikipedia.org/wiki/Representational_state_transfer) based api. It will be used as a second backend for my electron.js chat app and it will interact with the postgresql database. Most of the processing of data, messages, authentication and more will be handled here remotely and securely.
+This is a [Web Socket](https://en.wikipedia.org/wiki/WebSocket) and [REST](https://en.wikipedia.org/wiki/Representational_state_transfer) based api. It will be used as a second backend for my electron.js chat app and it will interact with the PostgreSQL database. Most of the processing of data, messages, authentication and more will be handled here remotely and securely.
 
 Most endpoints will return and accept an [`application/json`](https://en.wikipedia.org/wiki/JSON) type of input for POST and some query parameters.
 
 Also most endpoints will require Authentication/Authorization with OAuth JWT bearer tokens. 
 
 ### Format for endpoints:
-For each endpoint I will include the type of, and what data you will need to use for the request, an example response, if the endpoint it requires authentication, rate limits and more aditional information you might need when using it. I will also try to include a link to try out the endpoint.
+For each endpoint I will include the type of, and what data you will need to use for the request, an example response, if the endpoint it requires authentication, rate limits and more additional information you might need when using it. I will also try to include a link to try out the endpoint.
 
 **Format for example parameters/arguments:**  
 Another thing to note is that if I say something like `[username]` you need to replace the username with your actual username. If a parameter/argument is wrapped with angled brackets (`<argument>`) that means that it is required. If it is optional it will be wrapped in square brackets (`[argument]`)
@@ -67,8 +67,8 @@ In most examples I will include only the part after the base url.
 **Encryption**  
 All services and protocols (REST & WebSocket) within the API are using HTTPS and WSS which has TLS (Transport Layer Security) encryption.
 
-**Aditional Cloudflare Security**  
-I also use cloudflare as a middle man for requests. This helps with caching, security because they have functions for that, anylytics and more
+**Additional Cloudflare Security**  
+I also use Cloudflare as a middle man for requests. This helps with caching, security because they have functions for that, analytics and more
 
 ---
 
@@ -82,7 +82,7 @@ To be able to use most endpoints of this api you will require an access token. T
 
 ### Try is out here: [Link](https://chatapi.fusionsid.xyz/docs#/Get%20access%20token/login_for_access_token_token_post)
 
-This endpoint unlike most (that use application/json), uses `application/x-www-form-urlencoded` as the content type. So when submiting the details its done like `username=<username>&password=<password>&scope=[scopes]`
+This endpoint unlike most (that use application/json), uses `application/x-www-form-urlencoded` as the content type. So when submitting the details its done like `username=<username>&password=<password>&scope=[scopes]`
 
 ### Arguments:
 
@@ -124,7 +124,7 @@ curl -X 'POST' \
 ```
 
 **Note:**  
-If you dont want to request any scopes you can just do `&scope=`
+If you don't want to request any scopes you can just do `&scope=`
 
 ---
 
@@ -132,7 +132,7 @@ If you dont want to request any scopes you can just do `&scope=`
 
 Access tokens for users are of type `Bearer`. This prefix should be include when the endpoint needs the token in the header (see authorization bellow).  
 
-The access tokens are JWT (json web tokens). They are signed so mofifying them automatically makes them invalid.  
+The access tokens are JWT (json web tokens). They are signed so modifying them automatically makes them invalid.  
 Payload of the token is user_id, scopes (if none empty list), and expiry time.
 
 #### Access tokens expire in 1440 minutes (24 hours / 1 day) after they were created.
@@ -225,7 +225,7 @@ They also have a default set of permissions but can request more.
 ## User Permissions:
 
 Every user has certain permissions. If they are not a super (cool, awesome) user and they haven't requested any permissions then they get the default set.  
-User permissions is important because it allows them to access endpoints in the API that they didnt have access to before.
+User permissions is important because it allows them to access endpoints in the API that they didn't have access to before.
 
 **List of current permissions:**
 
@@ -243,7 +243,7 @@ If permission has `= False` it means that it is off by default and needs to be r
 
 **Admin permissions:**
 
-All of these permissions cannot be access unless you have a admin account. These permissions also canot be requested. I wil not explain them because its obvious.
+All of these permissions cannot be access unless you have a admin account. These permissions also can't be requested. I will not explain them because its obvious.
 
 * `ban_users: boolean`  
 * `unban_users: boolean`    
@@ -264,7 +264,7 @@ Want more? Ask nicely and request them :)
 
 # Chatrooms
 
-One of the features of this app is chatrooms. Chat rooms similar to irc rooms or group chats are a way for multiple users to communicate. All messages sent in the room are brodcasted to all people in the room. Users can create and join chatrooms.
+One of the features of this app is chatrooms. Chat rooms similar to irc rooms or group chats are a way for multiple users to communicate. All messages sent in the room are broadcasted to all people in the room. Users can create and join chatrooms.
 
 ## Chatroom Object:
 
@@ -306,12 +306,12 @@ One of the features of this app is chatrooms. Chat rooms similar to irc rooms or
 
 ---
 
-## Ratelimits
+## Rate limits
 
 All endpoints on this api have a default rate limit of 30 requests per minute.  
 If a specific endpoint has a different rate limit I will specify that in that endpoints section.
 
-If you make a request to the API after execding the rate limit you will get an error like this:
+If you make a request to the API after exceeding the rate limit you will get an error like this:
 
 ```json
 // Status code: 429
@@ -322,13 +322,13 @@ If you make a request to the API after execding the rate limit you will get an e
 
 \*results may vary if the endpoint has a different limit
 
-If you exceede the limit. STOP WHAT YOURE DOING RIGHT NOW. why you spamming me. I dont like it. Also after the minute ends you can continue making your requests. Also imagine tryna spam and getting ratelimited (skill issue)
+If you exceeds the limit. STOP WHAT YOU'RE DOING RIGHT NOW. why you spamming me. I don't like it. Also after the minute ends you can continue making your requests. Also imagine tryna spam and getting rate limited (skill issue)
 
 
 ---
 ## Common Errors
 
-These are errors that you can get on pretty much all endpoints. This is why im gonna keep them all here so i dont have to put them in each endpoints section. If the endpoint has any aditional errors to be noted i wil include them in that endpoints section.
+These are errors that you can get on pretty much all endpoints. This is why i'm gonna keep them all here so i don't have to put them in each endpoints section. If the endpoint has any additional errors to be noted i will include them in that endpoints section.
 
 
 ## Validation Error
@@ -426,7 +426,7 @@ So you get this:
 
 Returns the currently logged in user. To see who is logged in it checks who the access token from the Authorization header belongs too. 
 
-If authenticated successfull the response will be a user object like this:  
+If authenticated successfully the response will be a user object like this:  
 
 **Request:**
 ```bash
@@ -484,9 +484,9 @@ curl -X 'POST' \
 }'
 ```
 
-If sucessfull you will get a user object response.
+If successful you will get a user object response.
  
-**Example successfull response:**
+**Example successful response:**
 
 ```json
 {
@@ -532,7 +532,7 @@ If you make a request and the username is the same as some user that already exi
 **Authentication required for this endpoint**
 
 This endpoint is used to get all users registered to the app / users in the database.  
-Its very simple and doesnt require and data passed to it (except auth).
+Its very simple and doesn't require and data passed to it (except auth).
 
 **Request Schema:**
 
@@ -548,7 +548,7 @@ curl -X 'GET' \
  
 **Example successful response:**
 
-If succesfull you will get a list of user objects
+If successful you will get a list of user objects
 
 ```json
 [
@@ -667,7 +667,7 @@ curl -X 'PATCH' \
  
 **Example successful response:**
 
-If successfull you will get a response with the before and after (user objects) of the user:
+If successful you will get a response with the before and after (user objects) of the user:
 
 ```json
 {
@@ -737,7 +737,7 @@ If the user is not found you will get an error like this:
 
 This endpoint is used to update a the user who is currently logged in.  
 It will figure that out by looking at the user id that the token belongs too.  
-This endpoint is basically the same as the `PATCH /api/users/{user_id}` endpoint except you dont pass in the user id
+This endpoint is basically the same as the `PATCH /api/users/{user_id}` endpoint except you don't pass in the user id
 
 **Request Schema:**
 
@@ -770,7 +770,7 @@ curl -X 'PATCH' \
  
 **Example successful response:**
 
-If successfull you will get a response with the before and after (user objects) of the user:
+If successful you will get a response with the before and after (user objects) of the user:
 
 ```json
 {

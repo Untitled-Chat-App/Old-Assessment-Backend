@@ -620,6 +620,202 @@ If user is not found you will get this error:
 
 ---
 
+### Update user details:
+### `PATCH /api/users/{user_id}`
+
+**Authentication required for this endpoint**
+
+This endpoint is used to update a specific user. For example changing their password or saved public key.
+
+**Request Schema:**
+
+<img src="./images/update_users_schema.jpg" alt="drawing" width="690" height="auto"/>
+
+The user id just like the get user by id endpoint needs to be passed in the path.
+
+The `attribute` is the name of the value you want to change.  
+**Options:**  `"username", "password", "email", "public_key"`  
+See the user object section for info about each attribute.  
+
+The `new_value` is the new value of the attribute. So if you want to change the email to `"example@gmail.com"` you would do: 
+```json
+{
+  "attribute": "email",
+  "new_value": "example@gmail.com"
+}
+```
+
+**Example Request**  
+```bash
+curl -X 'PATCH' \
+  'https://chatapi.fusionsid.xyz/api/users/690420690' \
+  -H 'accept: application/json' \
+  -H 'Authorization: Bearer <access token>' \
+  -H 'Content-Type: application/json' \
+  -d '{
+  "attribute": "string",
+  "new_value": "string"
+}'
+```
+ 
+**Example successful response:**
+
+If successfull you will get a response with the before and after (user objects) of the user:
+
+```json
+{
+  "result": "User updated successfully",
+  "new_user": {
+    "username": "string",
+    "password": "string",
+    "email": "string",
+    "permissions": {
+      "perm_name": boolean,
+      ...
+    },
+    "public_key": "string",
+    "user_id": integer
+  },
+  "old_user": {
+    "username": "string",
+    "password": "string",
+    "email": "string",
+    "permissions": {
+      "perm_name": boolean,
+      ...
+    },
+    "public_key": "string",
+    "user_id": integer
+  }
+}
+```
+
+### Errors
+
+**Unsuccessful Response:**
+
+If you enter an attribute that doesn't exist you will get an error like this:
+
+```json
+{
+  "detail": {
+    "error": "Invalid attribute provided.",
+    "options": [
+      ...
+    ]
+  }
+}
+```
+
+If the user is not found you will get an error like this:
+
+```json
+{
+  "detail": {
+    "error": "User with id provided does not exist",
+    "id_provided": ...
+  }
+}
+```
+
+
+### Try the endpoint out here: [Link](https://chatapi.fusionsid.xyz/docs#/Users/update_user_data_api_users__user_id__patch)
+
+---
+
+### Update logged in user's details:
+### `PATCH /api/user/me`
+
+**Authentication required for this endpoint**
+
+This endpoint is used to update a the user who is currently logged in.  
+It will figure that out by looking at the user id that the token belongs too.  
+This endpoint is basically the same as the `PATCH /api/users/{user_id}` endpoint except you dont pass in the user id
+
+**Request Schema:**
+
+<img src="./images/update_me_schema.jpg" alt="drawing" width="690" height="auto"/>
+
+The `attribute` is the name of the value you want to change.  
+**Options:**  `"username", "password", "email", "public_key"`  
+See the user object section for info about each attribute.  
+
+The `new_value` is the new value of the attribute. So if you want to change the email to `"example@gmail.com"` you would do: 
+```json
+{
+  "attribute": "email",
+  "new_value": "example@gmail.com"
+}
+```
+
+**Example Request**  
+```bash
+curl -X 'PATCH' \
+  'https://chatapi.fusionsid.xyz/api/user/me' \
+  -H 'accept: application/json' \
+  -H 'Authorization: Bearer <access token>' \
+  -H 'Content-Type: application/json' \
+  -d '{
+  "attribute": "string",
+  "new_value": "string"
+}'
+```
+ 
+**Example successful response:**
+
+If successfull you will get a response with the before and after (user objects) of the user:
+
+```json
+{
+  "result": "User updated successfully",
+  "new_user": {
+    "username": "string",
+    "password": "string",
+    "email": "string",
+    "permissions": {
+      "perm_name": boolean,
+      ...
+    },
+    "public_key": "string",
+    "user_id": integer
+  },
+  "old_user": {
+    "username": "string",
+    "password": "string",
+    "email": "string",
+    "permissions": {
+      "perm_name": boolean,
+      ...
+    },
+    "public_key": "string",
+    "user_id": integer
+  }
+}
+```
+
+### Errors
+
+**Unsuccessful Response:**
+
+If you enter an attribute that doesn't exist you will get an error like this:
+
+```json
+{
+  "detail": {
+    "error": "Invalid attribute provided.",
+    "options": [
+      ...
+    ]
+  }
+}
+```
+
+
+### Try the endpoint out here: [Link](https://chatapi.fusionsid.xyz/docs#/Users/update_user_auth_data_api_user_me_patch)
+
+---
+
+
 
 <!-- ### :
 ### ``

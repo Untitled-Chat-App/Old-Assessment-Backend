@@ -92,6 +92,10 @@ Each user has a default set of permissions which is things they can do with the 
 * `"delete_self"`: Permission to delete the current user/delete your own account  
 * `"mofify_self"`: Be able to modify your own account
 
+Image of schema:
+
+![](./images/token_request_schema.jpg)
+
 **Example Request:**
 ```bash
 curl -X 'POST' \
@@ -102,10 +106,11 @@ curl -X 'POST' \
 ```
 
 **Example Response:**
-```bash
+```json
+// status code: 200
 {
-  "access_token": "string", # Your access token
-  "token_type": "string" # usually Bearer
+  "access_token": "string", // Your access token
+  "token_type": "string" // should be: "Bearer"
 }
 ```
 
@@ -313,6 +318,61 @@ If you exceede the limit. STOP WHAT YOURE DOING RIGHT NOW. why you spamming me. 
 
 ---
 
+## Validation Error
+
+If incorrect input has been passed to the api, you might get a validation error.  
+This should be on every endpoint so keep that in mind when making a request.  
+The status code of that error will be 422 and it will look like this:
+
+![](./images/validation_error.jpg)
+
+**What it will look like:**
+
+```json
+{
+  "detail": [
+    {
+      "loc": [
+        "string",
+        0
+      ],
+      "msg": "string",
+      "type": "string"
+    }
+  ]
+}
+```
+
+### Example:
+
+**Invalid Request:**
+```bash
+curl -X 'GET' \
+  'https://chatapi.fusionsid.xyz/api/users/kjgbewt235' \
+  -H 'accept: application/json' \
+  -H 'Authorization: Bearer <access token>'
+```
+
+The error here is that that endpoint requires the input to be an integer and i passed in `"kjgbewt235"` which is not a valid integer. Here is what you get back:
+
+**Unsuccessful Response:**
+
+```json
+{
+  "detail": [
+      {
+          "loc": ["path", "user_id"],
+          "msg": "value is not a valid integer",
+          "type": "type_error.integer",
+      }
+  ]
+}
+```
+
+In the response it will tell you what value was an incorrect value and what exactly the error was. 
+
+---
+
 ## User endpoints
 
 ---
@@ -324,34 +384,20 @@ If you exceede the limit. STOP WHAT YOURE DOING RIGHT NOW. why you spamming me. 
 
 Returns the currently logged in user. To see who is logged in it checks who the access token from the Authorization header belongs too. 
 
-If no user is logged in (auth token has not been provided) It will return:
-
-**Request:**
-```bash
-curl -X 'GET' \
-  'https://chatapi.fusionsid.xyz/api/user/me' \
-  -H 'accept: application/json'
-```
-
-**Response** Status Code = 401
-```json
-{
-  "detail": "Not authenticated"
-}
-```
-
 If authenticated successfull the response will be a user object like this:  
 
 **Request:**
 ```bash
 curl -X 'GET' \
   'https://chatapi.fusionsid.xyz/api/user/me' \
-  -H 'accept: application/json'
+  -H 'accept: application/json' \
+  -H 'Authorization: Bearer <access_token>'
 ```
 
 **Response:**
 
 ```json
+// status code if success: 200
 {
   "username": "string",
   "password": "string",
@@ -365,7 +411,26 @@ curl -X 'GET' \
 }
 ```
 
-### Try is out here: [Link](https://chatapi.fusionsid.xyz/docs#/default/me_api_user_me_get)
+### Errors
+
+If no user is logged in (auth token has not been provided) It will return:
+
+**Invalid Request:**
+```bash
+curl -X 'GET' \
+  'https://chatapi.fusionsid.xyz/api/user/me' \
+  -H 'accept: application/json'
+```
+
+**Unsuccessful Response** 
+```json
+// status code: 401
+{
+  "detail": "Not authenticated"
+}
+```
+
+### Try the endpoint out here: [Link](https://chatapi.fusionsid.xyz/docs#/default/me_api_user_me_get)
 
 ---
 
@@ -374,9 +439,65 @@ curl -X 'GET' \
 
 **Authentication not required for this endpoint**
 
-...
+This endpoint is used to signup users/create new users for the app.  
+
+**Request Schema:**
+
+![](./images/signup_request_schema.jpg)
+
+**Request**  
+A request to this endpoint will look like this:
+
+```bash
+curl -X 'POST' \
+  'https://chatapi.fusionsid.xyz/api/users/signup' \
+  -H 'accept: application/json' \
+  -H 'Content-Type: application/json' \
+  -d '{
+  "username": "string",
+  "email": "string",
+  "password": "string",
+  "public_key": "string"
+}'
+```
+
+If sucessfull you will get a user object response.
+ 
+**Example successfull response:**
+
+```json
+{
+  "success": true,
+  "detail": "User created successfully",
+  "user": {
+    "username": "string",
+    "password": "string",
+    "email": "string",
+    "permissions": {
+      "perm_name": boolean,
+      ...
+    },
+    "public_key": "string",
+    "user_id": integer
+  }
+}
+```
+
+### Errors
+
+If you make a request and the username is the same as some user that already exists you will get an error like this:
+
+**Unsuccessful Response:**
+
+```json
+// Status code: 409
+{
+  "detail": "User with this username already exists"
+}
+
+```
 
 
-### Try is out here: [Link](https://chatapi.fusionsid.xyz/docs#/default/create_account_api_users_signup_post)
+### Try the endpoint out here: [Link](https://chatapi.fusionsid.xyz/docs#/default/create_account_api_users_signup_post)
 
 ---

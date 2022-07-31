@@ -14,9 +14,11 @@ from core.database import asyncpg_connect, get_room
 from core.models import AuthorizedUser, NewRoom
 
 
-chatroom_endpoints = APIRouter(tags=[
+chatroom_endpoints = APIRouter(
+    tags=[
         "Chatrooms",
-    ])
+    ]
+)
 
 
 @chatroom_endpoints.post("/api/chatroom/new")

@@ -12,9 +12,11 @@ from core.models import AuthorizedUser, AuthPerms
 from core.database import get_user_by_id, asyncpg_connect
 
 
-get_user_endpoint = APIRouter(tags=[
+get_user_endpoint = APIRouter(
+    tags=[
         "Users",
-    ])
+    ]
+)
 
 
 @get_user_endpoint.get("/api/users/{user_id}")
@@ -42,14 +44,13 @@ async def get_user_with_user_id(
         user_id
     )  # Check if someone has the same username/account already exists
 
-    del user.password
-
     if user is None:
         raise HTTPException(
             status_code=409,
             detail="User with this username doesnt exists",
         )
 
+    del user.password
     return user
 
 

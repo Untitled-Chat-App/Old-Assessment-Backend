@@ -94,7 +94,7 @@ Each user has a default set of permissions which is things they can do with the 
 
 Image of schema:
 
-![](./images/token_request_schema.jpg)
+<img src="./images/token_request_schema.jpg" alt="drawing" width="690" height="auto"/>
 
 **Example Request:**
 ```bash
@@ -324,7 +324,9 @@ If incorrect input has been passed to the api, you might get a validation error.
 This should be on every endpoint so keep that in mind when making a request.  
 The status code of that error will be 422 and it will look like this:
 
-![](./images/validation_error.jpg)
+**Schema:**
+
+<img src="./images/validation_error.jpg" alt="drawing" width="690" height="auto"/>
 
 **What it will look like:**
 
@@ -443,7 +445,7 @@ This endpoint is used to signup users/create new users for the app.
 
 **Request Schema:**
 
-![](./images/signup_request_schema.jpg)
+<img src="./images/signup_request_schema.jpg" alt="drawing" width="690" height="auto"/>
 
 **Request**  
 A request to this endpoint will look like this:

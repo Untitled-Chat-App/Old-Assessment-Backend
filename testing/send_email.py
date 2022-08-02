@@ -14,9 +14,7 @@ password = "qkhhigsrsqjcpqnb"
 
 data = {"userid": 12214, "type": "password_reset"}
 to_encode = data.copy()
-expire = datetime.utcnow() + timedelta(
-    minutes=15
-)
+expire = datetime.utcnow() + timedelta(minutes=15)
 to_encode.update({"exp": expire})  # add in expiry time
 
 encoded_jwt = jwt.encode(to_encode, os.environ["JWT_SIGN"], algorithm="HS256")

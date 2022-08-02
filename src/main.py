@@ -20,7 +20,7 @@ from api.routes import (
     chatroom_websockets,
     chatroom_endpoints,
     other_user_endpoints,
-    reset_password_endpoint
+    reset_password_endpoint,
 )
 from core.models import Chat_API, AuthorizedUser
 from api.auth import oauth2_endpoint, check_auth_token

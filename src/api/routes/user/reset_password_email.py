@@ -35,11 +35,13 @@ async def create_reset_user_password_link(
     request: Request,
     user_id: int,
 ):
-    user =  await get_user_by_id(user_id)
+    user = await get_user_by_id(user_id)
 
     if user is None:
-        raise HTTPException(404, {"detail":"User with username found in token does not exist"})
-    
+        raise HTTPException(
+            404, {"detail": "User with username found in token does not exist"}
+        )
+
     data = {"user_id": user.user_id, "type": "password_reset"}
     to_encode = data.copy()
 
@@ -50,9 +52,9 @@ async def create_reset_user_password_link(
 
     port = 465
     smtp_server = "smtp.gmail.com"
-    sender_email = os.environ["EMAIL"] 
-    password = os.environ["EMAIL_PASSWORD"] 
-    
+    sender_email = os.environ["EMAIL"]
+    password = os.environ["EMAIL_PASSWORD"]
+
     context = ssl.create_default_context()
     with smtplib.SMTP_SSL(smtp_server, port, context=context) as server:
         server.login(sender_email, password)
@@ -65,11 +67,11 @@ async def create_reset_user_password_link(
 
 
 @reset_password_endpoint.post("/api/users/password/reset")
-async def reset_user_password(request: Request, reset_token: str, body: ResetPasswordBody):
+async def reset_user_password(
+    request: Request, reset_token: str, body: ResetPasswordBody
+):
     try:
-        payload = jwt.decode(
-            reset_token, os.environ["JWT_SIGN"], algorithms=["HS256"]
-        )
+        payload = jwt.decode(reset_token, os.environ["JWT_SIGN"], algorithms=["HS256"])
         user_id: str = payload.get("user_id")
         token_type = payload.get("type")
 
@@ -77,10 +79,14 @@ async def reset_user_password(request: Request, reset_token: str, body: ResetPas
             raise HTTPException(403, {"detail", "INVALID token type"})
 
         if user_id is None:
-            raise HTTPException(404, {"detail":"User with username found in token does not exist"})
+            raise HTTPException(
+                404, {"detail": "User with username found in token does not exist"}
+            )
 
     except JWTError:
-        raise HTTPException(403, {"detail":"Reset token expired lmao get good honestly"})
+        raise HTTPException(
+            403, {"detail": "Reset token expired lmao get good honestly"}
+        )
 
     password = await hash_text(body.new_password)
 

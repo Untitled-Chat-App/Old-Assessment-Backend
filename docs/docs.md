@@ -24,7 +24,7 @@
 ### [Endpoints](#endpoints):
 * [Rate limits](#ratelimits)
 * [Validation Error](#validation-error)
-* [User Endpoints](#user-endpoints)
+* [User Endpoints](#userusers-endpoints-httpsrest)
   * [Get current user](#get-current-logged-in-user)
   * [Create new user](#create-new-usersignup)
   * [Get all users](#get-all-users)
@@ -32,6 +32,9 @@
   * [Get user by id](#get-user-by-id)
   * [Update specific user's details](#update-user-details)
   * [Update logged in user's details](#update-logged-in-users-details)
+* [Chatroom Endpoints](#chatroom-endpoints-httpsrest)
+  * [Create a new chatroom](#create-a-new-chatroom)
+  * [Get a chatroom by its ID](#get-a-chatroom-by-its-id)
 
 
 

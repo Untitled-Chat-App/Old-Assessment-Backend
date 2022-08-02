@@ -85,4 +85,9 @@ async def get_room_by_id(
     Parameters:
         room_id (int): The id of the room to search for
     """
-    return await get_room(room_id)
+    room = await get_room(room_id)
+
+    if room is None:
+        return HTTPException(404, {"detail": "Room with this id doesnt exists", "id_provided": room_id})
+    
+    return room

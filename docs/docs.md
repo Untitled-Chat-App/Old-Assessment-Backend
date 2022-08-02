@@ -934,7 +934,10 @@ The created at attribute is the UTC unix timestamp of when the room was created.
 If there is no room by that id you will get an error like this:
 
 ```json
-null // havent coded the error part yet
+{
+  "detail": "Room with this id doesnt exists", 
+  "id_provided": integer // the room id you provided
+}
 ```
 
 

@@ -85,7 +85,9 @@ async def update_user_data(
         async with asyncpg_connect() as conn:
             async with conn.transaction():
                 await conn.execute(
-                    "UPDATE Users Set {} = $1 WHERE user_id=$2".format(update_details.attribute),
+                    "UPDATE Users Set {} = $1 WHERE user_id=$2".format(
+                        update_details.attribute
+                    ),
                     update_details.new_value,
                     user_id,
                 )
@@ -103,7 +105,7 @@ async def update_user_data(
 
     return {
         "result": "User updated successfully",
-        "new_user": updated_user,
+        "updated_user": updated_user,
         "old_user": user,
     }
 
@@ -163,7 +165,9 @@ async def update_user_auth_data(
         async with asyncpg_connect() as conn:
             async with conn.transaction():
                 await conn.execute(
-                    "UPDATE Users Set {} = $1 WHERE user_id=$2".format(update_details.attribute),
+                    "UPDATE Users Set {} = $1 WHERE user_id=$2".format(
+                        update_details.attribute
+                    ),
                     update_details.new_value,
                     user.user_id,
                 )
@@ -181,6 +185,6 @@ async def update_user_auth_data(
 
     return {
         "result": "User updated successfully",
-        "new_user": updated_user,
+        "updated_user": updated_user,
         "old_user": user,
     }

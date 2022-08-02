@@ -6,14 +6,14 @@ __all__ = ["signup_endpoint"]
 
 import random
 
-from fastapi import Depends, APIRouter, HTTPException, Request
 from slowapi import Limiter
 from slowapi.util import get_remote_address
+from fastapi import Depends, APIRouter, HTTPException, Request
 
+from ...auth import get_user
+from core.models import NewUser
 from core.utils import hash_text
 from core.database import asyncpg_connect
-from ...auth import check_auth_token, get_user
-from core.models import NewUser, AuthorizedUser
 
 
 signup_endpoint = APIRouter(
@@ -21,6 +21,7 @@ signup_endpoint = APIRouter(
         "Users",
     ]
 )
+
 # Need limiter here because these endpoints have different limit
 limiter = Limiter(key_func=get_remote_address)
 
@@ -30,7 +31,6 @@ limiter = Limiter(key_func=get_remote_address)
 async def create_account(
     request: Request,
     user_data: NewUser,
-    # auth_user: AuthorizedUser = Depends(check_auth_token),
 ):
     """
     Create a new user. Used when someone is signing up to the app.

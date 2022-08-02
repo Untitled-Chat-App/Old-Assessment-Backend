@@ -24,9 +24,10 @@ from api.routes import (
 from core.models import Chat_API, AuthorizedUser
 from api.auth import oauth2_endpoint, check_auth_token
 
-load_dotenv()
+load_dotenv()  # laod enviroment variables from the .env file
 app = Chat_API()
 
+# Add all the APIRouters (Endpoints) to the app
 app.include_router(oauth2_endpoint)
 app.include_router(signup_endpoint)
 app.include_router(get_user_endpoint)
@@ -68,7 +69,9 @@ async def home(request: Request):
     """
     Actual docs for the endpoints
     """
-    return RedirectResponse("https://github.com/Untitled-Chat-App/Backend/blob/main/docs/docs.md")
+    return RedirectResponse(
+        "https://github.com/Untitled-Chat-App/Backend/blob/main/docs/docs.md"
+    )
 
 
 @app.get("/api/user/me", tags=["Users"])
@@ -80,6 +83,7 @@ async def me(request: Request, user: AuthorizedUser = Depends(check_auth_token))
 
 
 HOST_IP = os.environ["HOST_IP"]
+
 
 # Run
 if __name__ == "__main__":

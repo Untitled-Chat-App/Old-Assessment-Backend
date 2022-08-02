@@ -66,7 +66,7 @@ async def get_all_users(
 
     return users
 
-    
+
 @get_user_endpoint.get("/api/users/{user_id}")
 async def get_user_with_user_id(
     request: Request,
@@ -100,5 +100,3 @@ async def get_user_with_user_id(
 
     del user.password
     return user
-
-

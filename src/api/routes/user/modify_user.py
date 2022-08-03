@@ -147,7 +147,7 @@ async def update_user_auth_data(
     if user is None:
         raise HTTPException(
             status_code=404,
-            detail={"error": "User with id provided does not exist"},
+            detail={"error": "User provided does not exist"},
         )
 
     if update_details.attribute == "password":

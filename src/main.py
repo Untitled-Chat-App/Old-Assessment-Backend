@@ -12,7 +12,6 @@ from dotenv import load_dotenv
 
 from fastapi import Request
 from fastapi.responses import HTMLResponse, RedirectResponse
-from fastapi.middleware.cors import CORSMiddleware
 
 from api.routes import (
     signup_endpoint,
@@ -21,12 +20,13 @@ from api.routes import (
     chatroom_endpoints,
     other_user_endpoints,
     reset_password_endpoint,
-)
+)  # import all the api routes
+
 from core.models import Chat_API, AuthorizedUser
 from api.auth import oauth2_endpoint, check_auth_token
 
 load_dotenv()  # laod enviroment variables from the .env file
-app = Chat_API()
+app = Chat_API()  # intantiate the chat api class
 
 # Add all the APIRouters (Endpoints) to the app
 app.include_router(oauth2_endpoint)
@@ -36,16 +36,6 @@ app.include_router(chatroom_websockets)
 app.include_router(chatroom_endpoints)
 app.include_router(reset_password_endpoint)
 app.include_router(other_user_endpoints)
-
-# cors
-origins = ["*"]
-app.add_middleware(
-    CORSMiddleware,
-    allow_origins=origins,
-    allow_credentials=True,
-    allow_methods=["*"],
-    allow_headers=["*"],
-)
 
 
 @app.get("/demo", tags=["Non API / Other"])
@@ -84,7 +74,7 @@ async def me(request: Request, user: AuthorizedUser = Depends(check_auth_token))
     return user
 
 
-HOST_IP = os.environ["HOST_IP"]
+HOST_IP = os.environ["HOST_IP"]  # get the hostage ip address. Eg 127.0.0.1 or 0.0.0.0
 
 
 # Run
@@ -102,6 +92,6 @@ if __name__ == "__main__":
         reload=False,
         host=HOST_IP,
         port=443,
-        ssl_keyfile="./key.pem",
+        ssl_keyfile="./key.pem",  # this and the line under make the ssl certificates work with the api
         ssl_certfile="./cert.pem",
     )

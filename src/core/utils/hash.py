@@ -4,7 +4,6 @@ Functions for hashing passwords to be stored in the database
 
 __all__ = ["hash_text"]
 
-import os
 from argon2 import PasswordHasher
 
 from dotenv import load_dotenv
@@ -24,6 +23,6 @@ async def hash_text(text: str) -> str:
         str: The hashed output of the function
     """
     password_hasher = PasswordHasher()
-    hash = password_hasher.hash(text)
+    hashed_output = password_hasher.hash(text)
 
-    return hash
+    return hashed_output

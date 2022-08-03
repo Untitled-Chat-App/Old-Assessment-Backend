@@ -10,7 +10,7 @@ from pydantic import BaseModel
 from core.models import AuthorizedUser
 
 
-@dataclass
+@dataclass  # have to use dataclass for this one because pydantic wont work with it
 class RoomUser:
     """
     A connection to the chatroom

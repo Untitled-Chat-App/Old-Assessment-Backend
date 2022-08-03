@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Reset your password</title>
+</head>
+
+<body>
+    <h1></h1>
+    <form>
+        <label>Imagine having to reset your password actual skill issue anyways enter bellow:</label>
+        <br>
+        <input type="password" id="new_password" placeholder="Enter new password" autofocus name="password" required />
+        <br>
+        <button type="submit" value="Reset">Reset Password</button>
+    </form>
+    <script>
+        const params = new Proxy(new URLSearchParams(window.location.search), {
+            get: (searchParams, prop) => searchParams.get(prop),
+        });
+
+        var resetToken = params.reset_token
+        if (resetToken === null || resetToken === undefined) {
+            alert("Theres no reset token in the url man")
+        }
+
+        async function resetPassword(newPassword, resetToken) {
+
+            await fetch(`https://chatapi.fusionsid.xyz/api/users/password/reset?reset_token=${resetToken}`, {
+                method: "POST",
+                headers: {
+                    Accept: "application/json",
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify({
+                    "new_password": newPassword
+                }),
+            })
+                .then((response) => response.json())
+                .then((data) => {
+                    if (data['username'] !== undefined) {
+                        const h = document.querySelector("h1");
+                        h.innerHTML = "Password reset nice"
+                    }
+                });
+        }
+
+        async function resetPasswordStuff(event) {
+            event.preventDefault();
+            var input = document.getElementById("new_password");
+            if (
+                input.value === null ||
+                input.value === undefined ||
+                input.value.replace(" ", "") === ""
+            ) {
+            } else {
+                await resetPassword(input.value, resetToken)
+            }
+            input.value = "";
+        }
+
+
+        const form = document.querySelector("form");
+        form.addEventListener("submit", resetPasswordStuff);
+
+    </script>
+</body>
+
+</html>

@@ -49,6 +49,8 @@ async def create_reset_user_password_link(
     to_encode.update({"exp": expire})
 
     encoded_jwt = jwt.encode(to_encode, os.environ["JWT_SIGN"], algorithm="HS256")
+    link = f"https://chatapi.fusionsid.xyz/reset-password?reset_token={encoded_jwt}"
+    message = f"You have been sent this email because you requested to have your password reset.\n\nYour reset token is: {encoded_jwt}\nIt will be valid for 15 minutes.\n\nLink for reseting password with a (trash) ui:\n{link}"
 
     port = 465
     smtp_server = "smtp.gmail.com"
@@ -59,11 +61,17 @@ async def create_reset_user_password_link(
     with smtplib.SMTP_SSL(smtp_server, port, context=context) as server:
         server.login(sender_email, password)
         try:
-            server.sendmail(sender_email, user.email, encoded_jwt)
+            server.sendmail(sender_email, user.email, message)
         except:
-            return "Failed to send email e"
+            raise HTTPException(
+                status_code=500,
+                detail={
+                    "error": "An error occured on the server side when trying to send email e",
+                    "what_err": "idk man Im trYING My besT herE",
+                },
+            )
 
-    return "Reset token sent to email"
+    return {"detail": "Reset token & link sent to email"}
 
 
 @reset_password_endpoint.post("/api/users/password/reset")

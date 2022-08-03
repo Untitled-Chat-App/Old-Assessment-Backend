@@ -39,11 +39,21 @@ app.include_router(other_user_endpoints)
 
 
 @app.get("/demo", tags=["Non API / Other"])
-async def home(request: Request):
+async def demo_page(request: Request):
     """
     The demo page
     """
-    with open("../testing/demo/index.html") as f:
+    with open("./html/demo.html") as f:
+        data = f.read()
+    return HTMLResponse(content=data)
+
+
+@app.get("/reset-password", tags=["Non API / Other"])
+async def reset_user_password(request: Request):
+    """
+    The reset password page
+    """
+    with open("./html/imagine_forgeting.html") as f:
         data = f.read()
     return HTMLResponse(content=data)
 
@@ -57,7 +67,7 @@ async def home(request: Request):
 
 
 @app.get("/documentation", tags=["Non API / Other"])
-async def home(request: Request):
+async def documentation(request: Request):
     """
     Actual docs for the endpoints
     """

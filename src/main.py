@@ -20,6 +20,7 @@ from api.routes import (
     chatroom_endpoints,
     other_user_endpoints,
     reset_password_endpoint,
+    delete_user_endpoint,
 )  # import all the api routes
 
 from core.models import Chat_API, AuthorizedUser
@@ -35,6 +36,7 @@ app.include_router(get_user_endpoint)
 app.include_router(chatroom_websockets)
 app.include_router(chatroom_endpoints)
 app.include_router(reset_password_endpoint)
+app.include_router(delete_user_endpoint)
 app.include_router(other_user_endpoints)
 
 

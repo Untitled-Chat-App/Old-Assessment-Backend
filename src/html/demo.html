@@ -21,8 +21,11 @@
             src: url("../testing/demo/fonts/aileron-light.otf");
         }
 
+        @import url("./fonts.css");
+
         body {
             background-color: #36393f;
+            overflow-x: hidden;
         }
 
         .room-title {
@@ -32,16 +35,16 @@
             margin: 0;
             padding-top: 5px;
             padding-bottom: 5px;
-            padding-left: 15px;
             display: flex;
-            width: auto;
-            left: 2.5vw;
-            right: 2.5vw;
+            width: 100%;
+            left: 0;
+            text-align: center;
         }
 
         .room-title h1 {
             font-family: aileron;
             font-size: 3vw;
+            padding-left: 3rem;
             word-wrap: break-word;
             color: white;
             margin: 0;
@@ -94,37 +97,69 @@
             background-color: rgb(65, 68, 74);
             border-width: 0;
             cursor: pointer;
+            color: rgb(197, 84, 71);
         }
 
         .message-send-div button:hover {
-            color: rgb(91, 92, 94);
+            color: rgb(188, 72, 59);
             border-width: 0;
             cursor: pointer;
         }
 
-        .message {
-            background-color: #2d3036;
-            margin-left: 3rem;
+
+
+
+        .message-you {
+            background-color: rgb(197, 84, 71);
+            margin-left: 30rem;
             margin-right: 3rem;
             padding: 15px;
-            border-radius: 10px;
+            border-radius: 20px 20px 0px 20px;
             padding-bottom: 30px;
             margin-bottom: 1rem;
         }
 
-        .message .message-time {
+        .message-you .message-time {
             float: right;
             color: white;
-            font-family: taro;
+            font-family: aileron;
         }
 
-        .message .message-author {
+        .message-you .message-author {
             color: white;
             font-family: aileron;
             font-size: 1.25rem;
         }
 
-        .message .message-content {
+        .message-you .message-content {
+            color: lightgray;
+            font-family: aileron-light;
+        }
+
+
+        .message-other {
+            background-color: #44474d;
+            margin-left: 3rem;
+            margin-right: 30rem;
+            padding: 15px;
+            border-radius: 20px 20px 20px 0px;
+            padding-bottom: 30px;
+            margin-bottom: 1rem;
+        }
+
+        .message-other .message-time {
+            float: right;
+            color: white;
+            font-family: aileron;
+        }
+
+        .message-other .message-author {
+            color: white;
+            font-family: aileron;
+            font-size: 1.25rem;
+        }
+
+        .message-other .message-content {
             color: lightgray;
             font-family: aileron-light;
         }
@@ -199,9 +234,10 @@
         }
 
         var room_data;
+        var username;
 
         window.addEventListener("load", async function (event) {
-            var username = prompt("Enter username", username);
+            username = prompt("Enter username", username);
             var password = prompt("Enter password", password);
             var room_id = prompt("Enter room id", room_id);
 
@@ -218,13 +254,36 @@
                 `wss://chatapi.fusionsid.xyz/api/ws/chatroom?access_token=${access_token}&room_id=${room_data.room_id}`
             );
 
+            ws.onerror = function (event) {
+                alert("Failed to connect to websocket")
+                location.reload();
+            }
+
             ws.onmessage = function (event) {
                 let msg = event.data;
+
+                // Convert ws response to js object
+                while (typeof msg !== "object") {
+                    msg = JSON.parse(msg);
+                }
+                try {
+                    user = msg["message_author"];
+                }
+                catch (e) {
+
+                }
+
                 var messages = document.getElementById("messages");
 
                 // The div:
                 var message = document.createElement("div");
-                message.className = "message";
+                try {
+                    if (user["username"] === username) {
+                        message.className = "message-you";
+                    } else {
+                        message.className = "message-other";
+                    }
+                } catch { message.className = "message-other"; }
 
                 var message_author_span = document.createElement("span");
                 var message_content_span = document.createElement("span");
@@ -246,51 +305,54 @@
                 var msgTime = document.createTextNode(current_time);
                 message_time_span.appendChild(msgTime);
 
-                // Convert ws response to js object
-                while (typeof msg !== "object") {
-                    msg = JSON.parse(msg);
-                }
 
                 if (msg["event"] !== undefined) {
                     // On Events
                     if (msg["event"] === "User Disconnect") {
                         user = JSON.parse(msg["user"]);
-                        var what_happened = document.createTextNode(
-                            `${user["username"]} left the chat`
-                        );
-                        message_content_span.style.color = "red";
-                        message_content_span.appendChild(what_happened);
+                        var what_happened = document.createTextNode(`${user["username"]} left the chat`);;
+                        message_author_span.style.color = "red";
+                        message_author_span.appendChild(what_happened);
                     }
                     if (msg["event"] === "User Join") {
                         user = JSON.parse(msg["user"]);
-                        var what_happened = document.createTextNode(
-                            `${user["username"]} joined the chat`
-                        );
-                        message_content_span.style.color = "red";
-                        message_content_span.appendChild(what_happened);
+                        var what_happened = document.createTextNode(`${user["username"]} joined the chat`)
+                        message_author_span.style.color = "red";
+                        message_author_span.appendChild(what_happened);
                     }
+                    var br = document.createElement("br");
+                    message.appendChild(br);
+                    message.appendChild(message_author_span);
+                    message.appendChild(message_time_span);
                 } else {
                     // On normal message:
-                    var msgAuthor = document.createTextNode(
-                        msg["message_author"]["username"]
-                    );
+                    if (message.className === "message-you") {
+                        var msgAuthor = document.createTextNode(
+                            "You"
+                        );
+                    } else {
+                        var msgAuthor = document.createTextNode(
+                            msg["message_author"]["username"]
+                        );
+                    }
                     var msgContent = document.createTextNode(msg["messsage_content"]);
 
                     message_content_span.appendChild(msgContent);
                     message_author_span.appendChild(msgAuthor);
+
+                    message.appendChild(message_author_span);
+                    var br = document.createElement("br");
+                    message.appendChild(br);
+                    var br = document.createElement("br");
+                    message.appendChild(br);
+                    message.appendChild(message_content_span);
+                    var br = document.createElement("br");
+                    message.appendChild(br);
+                    var br = document.createElement("br");
+                    message.appendChild(br);
+                    message.appendChild(message_time_span);
                 }
 
-                message.appendChild(message_author_span);
-                var br = document.createElement("br");
-                message.appendChild(br);
-                var br = document.createElement("br");
-                message.appendChild(br);
-                message.appendChild(message_content_span);
-                var br = document.createElement("br");
-                message.appendChild(br);
-                var br = document.createElement("br");
-                message.appendChild(br);
-                message.appendChild(message_time_span);
 
                 messages.appendChild(message);
 

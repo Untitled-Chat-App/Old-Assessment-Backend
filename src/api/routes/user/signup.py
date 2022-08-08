@@ -52,6 +52,14 @@ async def create_account(
             detail="User with this username already exists",
         )
 
+    async with asyncpg_connect() as conn:
+        data = await conn.fetch("SELECT * FROM Users WHERE email=$1", user_data.email)
+        if len(data) != 0:
+            raise HTTPException(
+                status_code=409,
+                detail="User with this email already exists",
+            )
+
     # Hash their password (to be stored)
     hashed_password = await hash_text(user_data.password)
 

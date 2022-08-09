@@ -36,10 +36,10 @@ async def create_account(
     Create a new user. Used when someone is signing up to the app.
 
     Parameters:
-        username (str): The new users username  
-        email (str): The new users email  
-        password (str): The new users password  
-        public_key (str): The new users public_key  
+        username (str): The new users username
+        email (str): The new users email
+        password (str): The new users password
+        public_key (str): The new users public_key
     """
 
     # user = await get_user(
@@ -48,32 +48,35 @@ async def create_account(
 
     # if user is not None:
     username_conflict_error = HTTPException(
-            status_code=409,
-            detail="User with this username already exists",
-        )
+        status_code=409,
+        detail="User with this username already exists",
+    )
 
     email_conflict_error = HTTPException(
-                status_code=409,
-                detail="User with this email already exists",
-            )
+        status_code=409,
+        detail="User with this email already exists",
+    )
 
     async with asyncpg_connect() as conn:
-        email_search = await conn.fetch("SELECT * FROM Users WHERE LOWER(email)=LOWER($1)", user_data.email)
+        email_search = await conn.fetch(
+            "SELECT * FROM Users WHERE LOWER(email)=LOWER($1)", user_data.email
+        )
         if len(email_search):
             raise email_conflict_error
-        
-        username_search = await conn.fetch("SELECT * FROM Users WHERE LOWER(username)=LOWER($1)", user_data.username)
+
+        username_search = await conn.fetch(
+            "SELECT * FROM Users WHERE LOWER(username)=LOWER($1)", user_data.username
+        )
         if len(username_search):
             raise username_conflict_error
 
         # Hash their password (to be stored)
         hashed_password = await hash_text(user_data.password)
 
-
         user_id = None
 
         # Keep generating user ids and check if user with id already exists, if not break
-        while True:  
+        while True:
             user_id = random.randint(0, 1_000_000_000)
             data = await conn.fetch("SELECT * FROM Users WHERE user_id=$1", user_id)
             if not len(data):
@@ -100,5 +103,8 @@ async def create_account(
     # if not tell em you failed
     raise HTTPException(
         status_code=500,
-        detail={"successful": False, "detail": "internal error lmao, user failed to be created. Maybe try again"}
+        detail={
+            "successful": False,
+            "detail": "internal error lmao, user failed to be created. Maybe try again",
+        },
     )

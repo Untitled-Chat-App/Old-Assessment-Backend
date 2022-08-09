@@ -94,8 +94,15 @@ async def get_user_with_user_id(
 
     if user is None:
         raise HTTPException(
-            status_code=409,
-            detail="User with this id doesnt exists",
+            status_code=404,
+            detail={
+                "success": False,
+                "detail": "User with id provided doesnt exist",
+                "id_provided": user_id,
+                "error": "",
+                "tip": "Make sure you typed the user id correctly",
+                "extra": "Skill issue",
+            },
         )
 
     del user.password

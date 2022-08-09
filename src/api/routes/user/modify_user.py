@@ -49,26 +49,40 @@ async def update_user_data(
     if update_details.attribute not in OPTIONS:
         raise HTTPException(
             status_code=400,
-            detail={"error": "Invalid attribute provided.", "options": OPTIONS},
+            detail={
+                "success": False,
+                "detail": "Invalid attribute provided",
+                "options": OPTIONS,
+                "error": "",
+                "tip": "Read the options and do it right this time",
+                "extra": "Skill issue",
+            },
         )
 
     if auth_user.permissions.update_users != True:
         raise HTTPException(
             status_code=403,
             detail={
-                "error": "You don't have the permissions to perform this request.",
+                "success": False,
+                "detail": "You don't have the permissions to perform this request",
+                "error": "",
+                "tip": "Get the perms dude",
+                "extra": "Skill issue",
                 "permission_needed": ["update_users"],
             },
         )
-
     user = await get_user_by_id(user_id)
 
     if user is None:
         raise HTTPException(
             status_code=404,
             detail={
-                "error": "User with id provided does not exist",
+                "success": False,
+                "detail": "No user found with user id provided",
                 "id_provided": user_id,
+                "error": "",
+                "tip": "Check if you put the right id",
+                "extra": "Skill issue",
             },
         )
 
@@ -98,8 +112,11 @@ async def update_user_data(
         raise HTTPException(
             status_code=500,
             detail={
-                "error": "An error occured on the server side when updating the user",
-                "what_err": "idk man Im trYING My besT herE",
+                "success": False,
+                "detail": "An error occured server side when trying to update the user.",
+                "error": "",
+                "tip": "Try running this endpoint again",
+                "extra": "Skill issue",
             },
         )
 
@@ -132,22 +149,27 @@ async def update_user_auth_data(
     if update_details.attribute not in OPTIONS:
         raise HTTPException(
             status_code=400,
-            detail={"error": "Invalid attribute provided.", "options": OPTIONS},
+            detail={
+                "success": False,
+                "detail": "Invalid attribute provided",
+                "options": OPTIONS,
+                "error": "",
+                "tip": "Read the options and do it right this time",
+                "extra": "Skill issue",
+            },
         )
 
     if user.permissions.mofify_self != True:
         raise HTTPException(
             status_code=403,
             detail={
-                "error": "You don't have the permissions to perform this request.",
+                "success": False,
+                "detail": "You don't have the permissions to perform this request",
+                "error": "",
+                "tip": "Request the perms as a scope in your token request.",
+                "extra": "Skill issue",
                 "permission_needed": ["mofify_self"],
             },
-        )
-
-    if user is None:
-        raise HTTPException(
-            status_code=404,
-            detail={"error": "User provided does not exist"},
         )
 
     if update_details.attribute == "password":
@@ -178,8 +200,11 @@ async def update_user_auth_data(
         raise HTTPException(
             status_code=500,
             detail={
-                "error": "An error occured on the server side when updating the user",
-                "what_err": "idk man Im trYING My besT herE",
+                "success": False,
+                "detail": "An error occured server side when trying to update the user.",
+                "error": "",
+                "tip": "Try running this endpoint again",
+                "extra": "Skill issue",
             },
         )
 

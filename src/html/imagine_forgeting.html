@@ -123,7 +123,7 @@
 
         async function resetPassword(newPassword, resetToken) {
 
-            await fetch(`https://chatapi.fusionsid.xyz/api/users/password/reset?reset_token=${resetToken}`, {
+            await fetch(`https://chatapi.fusionsid.xyz/api/users/password/reset-password?reset_token=${resetToken}`, {
                 method: "POST",
                 headers: {
                     Accept: "application/json",

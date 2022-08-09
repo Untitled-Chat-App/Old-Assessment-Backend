@@ -40,7 +40,7 @@ app.include_router(delete_user_endpoint)
 app.include_router(other_user_endpoints)
 
 
-@app.get("/demo", tags=["Non API / Other"])
+@app.get("/demo", tags=["Pages"])
 async def demo_page(request: Request):
     """
     The demo page
@@ -50,7 +50,7 @@ async def demo_page(request: Request):
     return HTMLResponse(content=data)
 
 
-@app.get("/reset-password", tags=["Non API / Other"])
+@app.get("/forgot-password", tags=["Pages"])
 async def reset_user_password(request: Request):
     """
     The reset password page
@@ -60,7 +60,7 @@ async def reset_user_password(request: Request):
     return HTMLResponse(content=data)
 
 
-@app.get("/", tags=["Non API / Other"])
+@app.get("/", tags=["Other"])
 async def home(request: Request):
     """
     The home page, Redirects to docs
@@ -68,7 +68,7 @@ async def home(request: Request):
     return RedirectResponse("/docs")
 
 
-@app.get("/documentation", tags=["Non API / Other"])
+@app.get("/documentation", tags=["Other"])
 async def documentation(request: Request):
     """
     Actual docs for the endpoints

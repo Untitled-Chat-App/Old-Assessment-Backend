@@ -42,19 +42,28 @@ async def create_account(
         public_key (str): The new users public_key
     """
 
-    # user = await get_user(
-    #     user_data.username
-    # )  # Check if someone has the same username/account already exists
-
-    # if user is not None:
     username_conflict_error = HTTPException(
         status_code=409,
-        detail="User with this username already exists",
+        detail={
+            "success": False,
+            "detail": "User with this username already exists",
+            "username_provided": str(user_data.username),
+            "error": "",
+            "tip": "Change the username",
+            "extra": "Skill issue",
+        },
     )
 
     email_conflict_error = HTTPException(
         status_code=409,
-        detail="User with this email already exists",
+        detail={
+            "success": False,
+            "detail": "User with this email already exists",
+            "email_provided": str(user_data.username),
+            "error": "",
+            "tip": "Change the email",
+            "extra": "Skill issue",
+        },
     )
 
     async with asyncpg_connect() as conn:
@@ -98,13 +107,16 @@ async def create_account(
     user = await get_user(user_data.username)  # fetch user from database
     if user is not None:  # if user exists (user was created properly), return user
         del user.password
-        return {"successful": True, "detail": "User created successfully", "user": user}
+        return {"success": True, "detail": "User created successfully", "user": user}
 
     # if not tell em you failed
     raise HTTPException(
         status_code=500,
         detail={
-            "successful": False,
-            "detail": "internal error lmao, user failed to be created. Maybe try again",
+            "success": False,
+            "detail": "User failed to be created",
+            "error": "",
+            "tip": "Try signing up again",
+            "extra": "Skill issue",
         },
     )

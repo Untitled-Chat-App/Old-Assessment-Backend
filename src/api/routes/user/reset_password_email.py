@@ -8,14 +8,11 @@ import os
 import smtplib, ssl
 from datetime import datetime, timedelta
 
-import dotenv
 from jose import JWTError, jwt
 from pydantic import BaseModel
-from fastapi import Depends, APIRouter, HTTPException, Request
+from fastapi import APIRouter, HTTPException, Request
 
 from core.utils import hash_text
-from ...auth import check_auth_token
-from core.models import AuthorizedUser, AuthPerms
 from core.database import get_user_by_id, asyncpg_connect
 
 
@@ -30,7 +27,7 @@ class ResetPasswordBody(BaseModel):
     new_password: str
 
 
-@reset_password_endpoint.get("/api/users/password/create-reset-token")
+@reset_password_endpoint.get("/api/users/password/create_reset_link")
 async def create_reset_user_password_link(
     request: Request,
     user_id: int,
@@ -38,9 +35,14 @@ async def create_reset_user_password_link(
     user = await get_user_by_id(user_id)
 
     if user is None:
-        raise HTTPException(
-            404, {"detail": "User with username found in token does not exist"}
-        )
+        403, {
+            "success": False,
+            "detail": "User with user_id provided does not exists",
+            "id_provided": user_id,
+            "error": "",
+            "tip": "Check if you typed the user_id correctly",
+            "extra": "Skill issue",
+        }
 
     data = {"user_id": user.user_id, "type": "password_reset"}
     to_encode = data.copy()
@@ -49,7 +51,7 @@ async def create_reset_user_password_link(
     to_encode.update({"exp": expire})
 
     encoded_jwt = jwt.encode(to_encode, os.environ["JWT_SIGN"], algorithm="HS256")
-    link = f"https://chatapi.fusionsid.xyz/reset-password?reset_token={encoded_jwt}"
+    link = f"https://chatapi.fusionsid.xyz/forgot-password?reset_token={encoded_jwt}"
     message = f"You have been sent this email because you requested to have your password reset.\n\nYour reset token is: {encoded_jwt}\nIt will be valid for 15 minutes.\n\nLink for reseting password with a (trash) ui:\n{link}"
 
     port = 465
@@ -62,19 +64,22 @@ async def create_reset_user_password_link(
         server.login(sender_email, password)
         try:
             server.sendmail(sender_email, user.email, message)
-        except:
+        except Exception as e:
             raise HTTPException(
                 status_code=500,
                 detail={
-                    "error": "An error occured on the server side when trying to send email e",
-                    "what_err": "idk man Im trYING My besT herE",
+                    "success": False,
+                    "detail": "An error occured on the server side while trying to send this email",
+                    "error": str(e),
+                    "tip": "The email you used for signup may be incorrect and since you dont know your password gg.",
+                    "extra": "Just get better",
                 },
             )
 
     return {"detail": "Reset token & link sent to email"}
 
 
-@reset_password_endpoint.post("/api/users/password/reset")
+@reset_password_endpoint.post("/api/users/password/reset-password")
 async def reset_user_password(
     request: Request, reset_token: str, body: ResetPasswordBody
 ):
@@ -88,12 +93,26 @@ async def reset_user_password(
 
         if user_id is None:
             raise HTTPException(
-                404, {"detail": "User with username found in token does not exist"}
+                403,
+                {
+                    "success": False,
+                    "detail": "Username found in token does not belong to a real account",
+                    "error": "",
+                    "tip": "",
+                    "extra": "Skill issue also idk how you managed to do that",
+                },
             )
 
-    except JWTError:
+    except JWTError as err:
         raise HTTPException(
-            403, {"detail": "Reset token expired lmao get good honestly"}
+            403,
+            {
+                "success": False,
+                "detail": "Reset token invalid",
+                "error": str(err),
+                "tip": "Try gnereating a new token",
+                "extra": "Just get good honestly",
+            },
         )
 
     password = await hash_text(body.new_password)

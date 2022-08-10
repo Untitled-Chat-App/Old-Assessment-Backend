@@ -74,7 +74,7 @@ async def documentation(request: Request):
     Actual docs for the endpoints
     """
     return RedirectResponse(
-        "https://github.com/Untitled-Chat-App/Backend/blob/main/docs/docs.md"
+        "https://github.com/Untitled-Chat-App/Backend/wiki/introduction#introduction"
     )
 
 

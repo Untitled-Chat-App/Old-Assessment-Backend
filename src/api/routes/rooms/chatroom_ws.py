@@ -5,6 +5,7 @@ Code for the chatroom websocket endpoints
 __all__ = ["chatroom_websockets"]
 
 import json
+import random
 import datetime
 
 from fastapi import (
@@ -14,7 +15,7 @@ from fastapi import (
     WebSocketDisconnect,
 )
 
-from core.database import get_room
+from core.database import get_room, asyncpg_connect
 from ...auth import check_auth_token
 from core.models import RoomMessage, RoomUser, ChatRoom, Room
 
@@ -92,8 +93,32 @@ async def process_message_json(data: str, room: Room) -> RoomMessage:
     content = data["message_content"]
     user = await check_auth_token(data["access_token"])
     del user.password
+
     msg_id = 123  # will use real ids later
     created_at = datetime.datetime.utcnow().timestamp()
+
+    async with asyncpg_connect() as conn:
+        message_id = None
+        while True:
+            message_id = random.randint(0, 1_000_000_000)
+            data = await conn.fetch(
+                "SELECT * FROM room_messages WHERE message_id=$1", message_id
+            )
+            if not len(data):
+                break
+
+        async with conn.transaction():
+            await conn.execute(
+                """INSERT INTO room_messages (
+                    message_id, message_content, message_author_id, message_created_at, message_room_id
+                ) VALUES ($1, $2, $3, $,4 $5)""",
+                message_id,
+                content,
+                user.user_id,
+                created_at,
+                room.room_id,
+            )
+
     message = RoomMessage(
         chatroom=room,
         message_id=msg_id,

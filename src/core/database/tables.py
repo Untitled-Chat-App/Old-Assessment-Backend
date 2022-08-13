@@ -45,9 +45,30 @@ async def create_room_db():
             )
 
 
+async def create_room_messages_db():
+    """
+    Creates Room Messages table in the database
+
+    Takes no parameters and doesn't return anything
+    """
+    async with asyncpg_connect() as conn:  # connect
+        async with conn.transaction():  # start a transaction incase something goes wrong
+            await conn.execute(
+                """CREATE TABLE IF NOT EXISTS room_messages (
+                    message_id integer NOT NULL,
+                    message_content text NOT NULL,
+                    message_author_id integer NOT NULL,
+                    message_created_at integer NOT NULL,
+                    message_room_id integer NOT NULL,
+                    PRIMARY KEY (message_id)
+                )"""
+            )
+
+
 async def main():
     await create_user_db()
     await create_room_db()
+    await create_room_messages_db()
 
 
 asyncio.run(main())

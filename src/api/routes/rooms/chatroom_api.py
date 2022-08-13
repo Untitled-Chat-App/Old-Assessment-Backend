@@ -73,28 +73,6 @@ async def create_new_chatroom(
     return room
 
 
-@chatroom_endpoints.get("/api/chatroom/{room_id}")
-async def get_room_by_id(
-    request: Request,
-    room_id: int,
-    auth_user: AuthorizedUser = Depends(check_auth_token),
-):
-    """
-    Get room by the id
-
-    Parameters:
-        room_id (int): The id of the room to search for
-    """
-    room = await get_room(room_id)
-
-    if room is None:
-        return HTTPException(
-            404, {"detail": "Room with this id doesnt exists", "id_provided": room_id}
-        )
-
-    return room
-
-
 @chatroom_endpoints.get("/api/chatroom/get_messages")
 async def get_room_by_id(
     request: Request,
@@ -139,3 +117,25 @@ async def get_room_by_id(
         data = data[:limit]
         
     return data
+
+
+@chatroom_endpoints.get("/api/chatroom/{room_id}")
+async def get_room_by_id(
+    request: Request,
+    room_id: int,
+    auth_user: AuthorizedUser = Depends(check_auth_token),
+):
+    """
+    Get room by the id
+
+    Parameters:
+        room_id (int): The id of the room to search for
+    """
+    room = await get_room(room_id)
+
+    if room is None:
+        return HTTPException(
+            404, {"detail": "Room with this id doesnt exists", "id_provided": room_id}
+        )
+
+    return room

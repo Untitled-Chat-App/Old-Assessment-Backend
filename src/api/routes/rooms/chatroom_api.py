@@ -10,7 +10,7 @@ import datetime
 from fastapi import APIRouter, Depends, HTTPException, Request
 
 from ...auth import check_auth_token
-from core.database import asyncpg_connect, get_room
+from core.database import asyncpg_connect, get_room, get_user_by_id
 from core.models import AuthorizedUser, NewRoom
 
 
@@ -79,6 +79,7 @@ async def get_room_by_id(
     room_id: int,
     limit: int = None,
     author_id: int = None,
+    get_usernames: bool = None,
     auth_user: AuthorizedUser = Depends(check_auth_token),
 ):
     """
@@ -88,6 +89,7 @@ async def get_room_by_id(
         room_id (int): The id of the room to search for
         limit (Optional[int]): How many messages to get. If none it will get all.
         author_id (Optional[int]): Search for a specific user
+        get_usernames (Optional[bool]): Include usernames in result (SUPER SLOW PLEASE USE ASYNC)
     """
     room = await get_room(room_id)
 
@@ -115,7 +117,20 @@ async def get_room_by_id(
 
     if limit is not None:
         data = data[:limit]
-        
+
+    if get_usernames is not None:
+        final_data = []
+
+        for i in data:
+            i = dict(i)
+            user = await get_user_by_id(i["message_author_id"])
+            if user is None:
+                i["message_author_username"] = "IDK"
+                continue
+            i["message_author_username"] = user.username
+            final_data.append(i)
+        data = final_data
+
     return data
 
 

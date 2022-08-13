@@ -60,6 +60,7 @@ async def create_room_messages_db():
                     message_author_id integer NOT NULL,
                     message_created_at integer NOT NULL,
                     message_room_id integer NOT NULL,
+                    message_author_username TEXT NOT NULL,
                     PRIMARY KEY (message_id)
                 )"""
             )

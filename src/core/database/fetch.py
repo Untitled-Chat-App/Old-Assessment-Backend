@@ -95,6 +95,7 @@ async def get_user_by_id(user_id: int) -> Optional[AuthorizedUser]:
         perms.create_users = True
         perms.delete_users = True
         perms.update_users = True
+        perms.get_old_messages = True
 
     return AuthorizedUser(
         username=data[0][1],

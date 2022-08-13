@@ -50,6 +50,7 @@ async def get_all_users(
             perms.unban_users = True
             perms.create_users = True
             perms.delete_users = True
+            perms.get_old_messages = True
             perms.update_users = True
 
         user = AuthorizedUser(

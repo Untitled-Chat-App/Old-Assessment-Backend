@@ -111,7 +111,7 @@ async def process_message_json(data: str, room: Room) -> RoomMessage:
             await conn.execute(
                 """INSERT INTO room_messages (
                     message_id, message_content, message_author_id, message_created_at, message_author_username, message_room_id
-                ) VALUES ($1, $2, $3, $4, $5)""",
+                ) VALUES ($1, $2, $3, $4, $5, $6)""",
                 message_id,
                 content,
                 user.user_id,

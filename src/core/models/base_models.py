@@ -70,6 +70,7 @@ class AuthPerms(BaseModel):
     # Chat rooms
     join_rooms: bool = True
     create_rooms: bool = False
+    get_old_messages: bool = False
 
     # Admin perms
     ban_users: bool = False

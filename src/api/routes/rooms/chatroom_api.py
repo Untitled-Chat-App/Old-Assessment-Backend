@@ -93,3 +93,49 @@ async def get_room_by_id(
         )
 
     return room
+
+
+@chatroom_endpoints.get("/api/chatroom/get_messages")
+async def get_room_by_id(
+    request: Request,
+    room_id: int,
+    limit: int = None,
+    author_id: int = None,
+    auth_user: AuthorizedUser = Depends(check_auth_token),
+):
+    """
+    Get old messages from a room
+
+    Parameters:
+        room_id (int): The id of the room to search for
+        limit (Optional[int]): How many messages to get. If none it will get all.
+        author_id (Optional[int]): Search for a specific user
+    """
+    room = await get_room(room_id)
+
+    if room is None:
+        return HTTPException(
+            404, {"detail": "Room with this id doesnt exists", "id_provided": room_id}
+        )
+
+    if auth_user.permissions.get_old_messages != True:
+        raise HTTPException(
+            status_code=403,
+            detail={
+                "error": "You don't have the permissions to perform this request.",
+                "permission_needed": ["get_old_messages"],
+            },
+        )
+
+    async with asyncpg_connect() as conn:
+        if author_id is None:
+            data = await conn.fetch("SELECT * FROM room_messages WHERE message_room_id=$1", room_id)
+        else: 
+            data = await conn.fetch("SELECT * FROM room_messages WHERE message_room_id=$1 AND message_author_id=$2", room_id, author_id)
+    
+    data = list(reversed(data))
+
+    if limit is not None:
+        data = data[:limit]
+        
+    return data

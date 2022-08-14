@@ -75,6 +75,7 @@ async def connect_ws(websocket: WebSocket, access_token: str, room_id: int):
                 message: RoomMessage = await process_message_json(data, room)
             except json.decoder.JSONDecodeError:
                 await connection.websocket.send_text("skill issue ngl only json idiot")
+                continue
             
             await chatroom.broadcast(message)
 

@@ -70,7 +70,12 @@ async def connect_ws(websocket: WebSocket, access_token: str, room_id: int):
     try:
         while True:
             data = await connection.websocket.receive_text()
-            message: RoomMessage = await process_message_json(data, room)
+            
+            try:
+                message: RoomMessage = await process_message_json(data, room)
+            except json.decoder.JSONDecodeError:
+                continue
+            
             await chatroom.broadcast(message)
 
     except WebSocketDisconnect:

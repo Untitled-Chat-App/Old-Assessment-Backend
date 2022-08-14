@@ -59,8 +59,12 @@ async def connect_ws(websocket: WebSocket, access_token: str, room_id: int):
         )
 
         rooms[room_id] = chatroom
-
-    await chatroom.broadcast({"event": "User Join", "user": connection.user.json()})
+    
+    try:
+        await chatroom.broadcast({"event": "User Join", "user": connection.user.json()})
+    except RuntimeError as e:
+        print(e)
+        
     await chatroom.join_room(connection)
 
     try:

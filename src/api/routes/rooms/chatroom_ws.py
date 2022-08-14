@@ -94,7 +94,6 @@ async def process_message_json(data: str, room: Room) -> RoomMessage:
     user = await check_auth_token(data["access_token"])
     del user.password
 
-    msg_id = 123  # will use real ids later
     created_at = datetime.datetime.utcnow().timestamp()
 
     async with asyncpg_connect() as conn:
@@ -122,7 +121,7 @@ async def process_message_json(data: str, room: Room) -> RoomMessage:
 
     message = RoomMessage(
         chatroom=room,
-        message_id=msg_id,
+        message_id=message_id,
         created_at=created_at,
         messsage_content=content,
         message_author=user,

@@ -109,10 +109,16 @@ async def get_room_by_id(
 
     async with asyncpg_connect() as conn:
         if author_id is None:
-            data = await conn.fetch("SELECT * FROM room_messages WHERE message_room_id=$1", room_id)
-        else: 
-            data = await conn.fetch("SELECT * FROM room_messages WHERE message_room_id=$1 AND message_author_id=$2", room_id, author_id)
-    
+            data = await conn.fetch(
+                "SELECT * FROM room_messages WHERE message_room_id=$1", room_id
+            )
+        else:
+            data = await conn.fetch(
+                "SELECT * FROM room_messages WHERE message_room_id=$1 AND message_author_id=$2",
+                room_id,
+                author_id,
+            )
+
     data = list(reversed(data))
 
     if limit is not None:

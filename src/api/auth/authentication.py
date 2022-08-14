@@ -181,7 +181,7 @@ async def login_for_access_token(
             "delete_self",
             "create_rooms",
             "mofify_self",
-            "get_old_messages"
+            "get_old_messages",
         ]
         for i in scopes:
             if i not in extra_scope_options:

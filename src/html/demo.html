@@ -7,25 +7,6 @@
     />
     <title>Untitled Chat</title>
     <style>
-      /* Fonts here lol */
-
-      @font-face {
-        font-family: "aileron";
-        src: url("../testing/demo/fonts/aileron.otf");
-      }
-
-      @font-face {
-        font-family: "taro";
-        src: url("../testing/demo/fonts/taro.otf");
-      }
-
-      @font-face {
-        font-family: "aileron-light";
-        src: url("../testing/demo/fonts/aileron-light.otf");
-      }
-
-      @import url("./fonts.css");
-
       body {
         background-color: #36393f;
         overflow-x: hidden;
@@ -111,7 +92,7 @@
 
       .message-you {
         background-color: rgb(197, 84, 71);
-        margin-left: 30rem;
+        margin-left: 45vw;
         margin-right: 3rem;
         padding: 15px;
         border-radius: 20px 20px 0px 20px;
@@ -139,7 +120,7 @@
       .message-other {
         background-color: #44474d;
         margin-left: 3rem;
-        margin-right: 30rem;
+        margin-right: 45vw;
         padding: 15px;
         border-radius: 20px 20px 20px 0px;
         padding-bottom: 30px;
@@ -167,7 +148,7 @@
 
   <body>
     <div class="room-title">
-      <h1 id="room-title-text" id="room-title-text">[room name placeholder]</h1>
+      <h1 id="room-title-text" id="room-title-text">Loading Room...</h1>
     </div>
 
     <div style="height: 10vh"></div>
@@ -248,9 +229,12 @@
       var username;
 
       window.addEventListener("load", async function (event) {
-        username = prompt("Enter username", username);
-        var password = prompt("Enter password", password);
-        var room_id = prompt("Enter room id", room_id);
+        // username = prompt("Enter username", username);
+        // var password = prompt("Enter password", password);
+        // var room_id = prompt("Enter room id", room_id);
+        username = "FusionSid"
+        var password = "password"
+        var room_id = 690420690
 
         let token = await getAccessToken(username, password);
         room_data = await getRoomById(room_id, token);
@@ -258,6 +242,86 @@
         title.innerHTML = room_data.room_name;
 
         start(token);
+
+        fetch(
+        `https://chatapi.fusionsid.xyz/api/chatroom/get_messages?room_id=${room_data.room_id}`,
+        {
+            method: "GET",
+            headers: {
+                "Content-Type": "application/json",
+                Authorization: `Bearer ${token}`,
+            },
+        }
+    )
+        .then((response) => response.json())
+        .then((json_data) => {
+            var messages = document.getElementById("messages");
+            json_data.forEach(function (item, index) {
+                var message = document.createElement("div");
+
+                var message_author_span = document.createElement("span");
+                message_author_span.className = "message-author";
+                try {
+                    if (item["message_author_username"] === username) {
+                        message.className = "message-you";
+                    } else {
+                        message.className = "message-other";
+                    }
+                } catch {
+                    message.className = "message-other";
+                }
+                if (message.className === "message-you") {
+                    var msgAuthor = document.createTextNode("You");
+                } else {
+                    var msgAuthor = document.createTextNode(
+                        item["message_author_username"]
+                    );
+                }
+                message_author_span.appendChild(msgAuthor);
+                message.appendChild(message_author_span);
+                var br = document.createElement("br");
+                message.appendChild(br);
+                var br = document.createElement("br");
+                message.appendChild(br);
+
+                // content
+                var message_content_span = document.createElement("span");
+                message_content_span.className = "message-content";
+                message_content_span.className = "message-content";
+                var msgContent = document.createTextNode(
+                    item["message_content"]
+                );
+                message_content_span.prepend(msgContent);
+                message.appendChild(message_content_span);
+                var br = document.createElement("br");
+                message.appendChild(br);
+                var br = document.createElement("br");
+                message.appendChild(br);
+
+                // time
+                var message_time_span = document.createElement("span");
+                message_time_span.className = "message-time";
+                let date = new Date(item["message_created_at"] * 1000);
+                let created_at = new Intl.DateTimeFormat("default", {
+                    hour12: true,
+                    hour: "numeric",
+                    minute: "numeric",
+                }).format(date);
+                var msgTime = document.createTextNode(created_at);
+                message_time_span.appendChild(msgTime);
+                message.appendChild(message_time_span);
+
+                // Prepend to messages
+                messages.prepend(message);
+            });
+            var messages = document.getElementById("messages");
+            var last_message = messages.lastChild;
+            const scrollIntoViewOptions = {
+                behavior: "smooth",
+                block: "center",
+            };
+            last_message.scrollIntoView(scrollIntoViewOptions);
+        });
       });
 
       function start(access_token) {

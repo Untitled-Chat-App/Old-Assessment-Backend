@@ -105,6 +105,8 @@ async def update_user_data(
                     update_details.new_value,
                     user_id,
                 )
+                if update_details.attribute == "username":
+                    await update_username_everywhere(user_id, update_details.new_value)
 
     updated_user = await get_user_by_id(user_id)
 
@@ -193,6 +195,10 @@ async def update_user_auth_data(
                     update_details.new_value,
                     user.user_id,
                 )
+                if update_details.attribute == "username":
+                    await update_username_everywhere(
+                        user.user_id, update_details.new_value
+                    )
 
     updated_user = await get_user_by_id(user.user_id)
 
@@ -213,3 +219,13 @@ async def update_user_auth_data(
         "updated_user": updated_user,
         "old_user": user,
     }
+
+
+async def update_username_everywhere(user_id: str, new_username: str):
+    async with asyncpg_connect() as conn:
+        async with conn.transaction():
+            await conn.execute(
+                "UPDATE room_messages Set message_author_username = $1 WHERE message_author_id=$2",
+                new_username,
+                user_id,
+            )

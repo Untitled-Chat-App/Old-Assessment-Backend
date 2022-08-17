@@ -83,9 +83,7 @@ async def code(request: Request):
     """
     Code for the app
     """
-    return RedirectResponse(
-        "https://github.com/Untitled-Chat-App/"
-    )
+    return RedirectResponse("https://github.com/Untitled-Chat-App/")
 
 
 @app.get("/api/user/me", tags=["Users"])

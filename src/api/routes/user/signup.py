@@ -87,7 +87,7 @@ async def create_account(
 
         user_id = None
 
-        # Keep generating user ids and check if user with id already exists, if not break    
+        # Keep generating user ids and check if user with id already exists, if not break
         while True:
             user_id = random.randint(0, 9_000_000_000_000_000_000)
             data = await conn.fetch("SELECT * FROM Users WHERE user_id=$1", user_id)
@@ -156,8 +156,4 @@ API docs: {api_docs}
                 },
             }
 
-    return {
-        "success": True, 
-        "detail": "User created successfully", 
-        "user": user
-    }
+    return {"success": True, "detail": "User created successfully", "user": user}

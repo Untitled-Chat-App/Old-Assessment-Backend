@@ -110,5 +110,5 @@ async def get_user_with_user_id(
 
     del user.password
     del user.email
-    
+
     return user

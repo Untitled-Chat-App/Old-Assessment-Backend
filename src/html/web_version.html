@@ -1,475 +1,471 @@
 <!DOCTYPE html>
 <html>
-  <head>
-    <meta
-      name="viewport"
-      content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"
-    />
-    <title>Untitled Chat</title>
-    <style>
-      body {
-        background-color: #36393f;
-        overflow-x: hidden;
-      }
 
-      .room-title {
-        background-color: rgb(65, 68, 74);
-        border-radius: 10px;
-        position: fixed;
-        margin: 0;
-        padding-top: 5px;
-        padding-bottom: 5px;
-        display: flex;
-        width: 100%;
-        left: 0;
-        text-align: center;
-      }
+<head>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+  <title>Untitled Chat</title>
+  <style>
+    body {
+      background-color: #36393f;
+      overflow-x: hidden;
+    }
 
-      .room-title h1 {
-        font-family: aileron;
-        font-size: 3vw;
-        padding-left: 3rem;
-        word-wrap: break-word;
-        color: white;
-        margin: 0;
-      }
+    .room-title {
+      background-color: rgb(65, 68, 74);
+      border-radius: 10px;
+      position: fixed;
+      margin: 0;
+      padding-top: 5px;
+      padding-bottom: 5px;
+      display: flex;
+      width: 100%;
+      left: 0;
+      text-align: center;
+    }
 
-      .message-input-bar {
-        position: fixed;
-        display: flex;
-        width: auto;
-        left: 2.5vw;
-        right: 2.5vw;
-        bottom: 1.5rem;
-        background-color: rgb(65, 68, 74);
-        padding: 10px;
-        border-radius: 10px;
-        box-shadow: 0px 3px 15px rgba(0, 0, 0, 0.2);
-      }
+    .room-title h1 {
+      font-family: aileron;
+      font-size: 3vw;
+      padding-left: 3rem;
+      word-wrap: break-word;
+      color: white;
+      margin: 0;
+    }
 
-      .message-send-div {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        width: 100%;
-      }
+    .message-input-bar {
+      position: fixed;
+      display: flex;
+      width: auto;
+      left: 2.5vw;
+      right: 2.5vw;
+      bottom: 1.5rem;
+      background-color: rgb(65, 68, 74);
+      padding: 10px;
+      border-radius: 10px;
+      box-shadow: 0px 3px 15px rgba(0, 0, 0, 0.2);
+    }
 
-      .message-send-div .input-box {
-        display: block;
-        background-color: rgb(65, 68, 74);
-        padding-top: 0.5rem;
-        padding-bottom: 0.5rem;
-        padding-left: 1rem;
-        margin-left: 0.75rem;
-        margin-right: 0.75rem;
-        color: white;
-        font-size: 1rem;
-        width: 100%;
-        outline: 0;
-        border-width: 0;
-        font-family: aileron-light;
-      }
+    .message-send-div {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      width: 100%;
+    }
 
-      .message-send-div .icon {
-        transform-origin: center;
-        --transform-rotate: 90deg;
-        width: 2rem;
-        height: 2rem;
-      }
+    .message-send-div .input-box {
+      display: block;
+      background-color: rgb(65, 68, 74);
+      padding-top: 0.5rem;
+      padding-bottom: 0.5rem;
+      padding-left: 1rem;
+      margin-left: 0.75rem;
+      margin-right: 0.75rem;
+      color: white;
+      font-size: 1rem;
+      width: 100%;
+      outline: 0;
+      border-width: 0;
+      font-family: aileron-light;
+    }
 
-      .message-send-div button {
-        background-color: rgb(65, 68, 74);
-        border-width: 0;
-        cursor: pointer;
-        color: rgb(197, 84, 71);
-      }
+    .message-send-div .icon {
+      transform-origin: center;
+      --transform-rotate: 90deg;
+      width: 2rem;
+      height: 2rem;
+    }
 
-      .message-send-div button:hover {
-        color: rgb(188, 72, 59);
-        border-width: 0;
-        cursor: pointer;
-      }
+    .message-send-div button {
+      background-color: rgb(65, 68, 74);
+      border-width: 0;
+      cursor: pointer;
+      color: rgb(197, 84, 71);
+    }
 
-      .message-you {
-        background-color: rgb(197, 84, 71);
-        margin-left: 45vw;
-        margin-right: 3rem;
-        padding: 15px;
-        border-radius: 20px 20px 0px 20px;
-        padding-bottom: 30px;
-        margin-bottom: 1rem;
-      }
+    .message-send-div button:hover {
+      color: rgb(188, 72, 59);
+      border-width: 0;
+      cursor: pointer;
+    }
 
-      .message-you .message-time {
-        float: right;
-        color: white;
-        font-family: aileron;
-      }
+    .message-you {
+      background-color: rgb(197, 84, 71);
+      margin-left: 45vw;
+      margin-right: 3rem;
+      padding: 15px;
+      border-radius: 20px 20px 0px 20px;
+      padding-bottom: 30px;
+      margin-bottom: 1rem;
+    }
 
-      .message-you .message-author {
-        color: white;
-        font-family: aileron;
-        font-size: 1.25rem;
-      }
+    .message-you .message-time {
+      float: right;
+      color: white;
+      font-family: aileron;
+    }
 
-      .message-you .message-content {
-        color: lightgray;
-        font-family: aileron-light;
-      }
+    .message-you .message-author {
+      color: white;
+      font-family: aileron;
+      font-size: 1.25rem;
+    }
 
-      .message-other {
-        background-color: #44474d;
-        margin-left: 3rem;
-        margin-right: 45vw;
-        padding: 15px;
-        border-radius: 20px 20px 20px 0px;
-        padding-bottom: 30px;
-        margin-bottom: 1rem;
-      }
+    .message-you .message-content {
+      color: lightgray;
+      font-family: aileron-light;
+    }
 
-      .message-other .message-time {
-        float: right;
-        color: white;
-        font-family: aileron;
-      }
+    .message-other {
+      background-color: #44474d;
+      margin-left: 3rem;
+      margin-right: 45vw;
+      padding: 15px;
+      border-radius: 20px 20px 20px 0px;
+      padding-bottom: 30px;
+      margin-bottom: 1rem;
+    }
 
-      .message-other .message-author {
-        color: white;
-        font-family: aileron;
-        font-size: 1.25rem;
-      }
+    .message-other .message-time {
+      float: right;
+      color: white;
+      font-family: aileron;
+    }
 
-      .message-other .message-content {
-        color: lightgray;
-        font-family: aileron-light;
-      }
-    </style>
-  </head>
+    .message-other .message-author {
+      color: white;
+      font-family: aileron;
+      font-size: 1.25rem;
+    }
 
-  <body>
-    <div class="room-title">
-      <h1 id="room-title-text" id="room-title-text">Loading Room...</h1>
-    </div>
+    .message-other .message-content {
+      color: lightgray;
+      font-family: aileron-light;
+    }
+  </style>
+</head>
 
-    <div style="height: 10vh"></div>
+<body>
+  <div class="room-title">
+    <h1 id="room-title-text" id="room-title-text">Loading Room...</h1>
+  </div>
 
-    <div id="messages"></div>
+  <div style="height: 10vh"></div>
 
-    <div style="height: 15vh"></div>
-    <div class="message-input-bar">
-      <form class="message-send-div" id="message-send-div">
-        <input
-          type="text"
-          id="messageText"
-          placeholder=" enter message"
-          autofocus
-          class="input-box"
-          name="message"
-          required
-        />
-        <button type="submit">
-          <svg
-            class="icon"
-            xmlns="http://www.w3.org/2000/svg"
-            viewBox="0 0 20 20"
-            fill="currentColor"
-          >
-            <path
-              d="M10.894 2.553a1 1 0 00-1.788 0l-7 14a1 1 0 001.169 1.409l5-1.429A1 1 0 009 15.571V11a1 1 0 112 0v4.571a1 1 0 00.725.962l5 1.428a1 1 0 001.17-1.408l-7-14z"
-            />
-          </svg>
-        </button>
-      </form>
-    </div>
-    <script>
-      const API_URL = "https://chatapi.fusionsid.xyz";
+  <div id="messages"></div>
 
-      async function getAccessToken(username = null, password = null) {
-        let token;
+  <div style="height: 15vh"></div>
+  <div class="message-input-bar">
+    <form class="message-send-div" id="message-send-div">
+      <input type="text" id="messageText" placeholder=" enter message" autofocus class="input-box" name="message"
+        required />
+      <button type="submit">
+        <svg class="icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
+          <path
+            d="M10.894 2.553a1 1 0 00-1.788 0l-7 14a1 1 0 001.169 1.409l5-1.429A1 1 0 009 15.571V11a1 1 0 112 0v4.571a1 1 0 00.725.962l5 1.428a1 1 0 001.17-1.408l-7-14z" />
+        </svg>
+      </button>
+    </form>
+  </div>
+  <script>
+    const API_URL = "https://chatapi.fusionsid.xyz";
 
-        // Format login details into query params
-        let login_details = new URLSearchParams({
-          username: username,
-          password: password,
-          scope: "get_old_messages"
-        }).toString();
+    async function getAccessToken(username = null, password = null) {
+      let token;
 
-        await fetch(`${API_URL}/token`, {
-          method: "POST",
-          headers: {
-            Accept: "application/json",
-            "Content-Type": "application/x-www-form-urlencoded",
-          },
-          body: login_details,
-        })
-          .then((response) => response.json())
-          .then((data) => {
-            token = data["access_token"];
-          });
+      // Format login details into query params
+      let login_details = new URLSearchParams({
+        username: username,
+        password: password,
+        scope: "get_old_messages"
+      }).toString();
 
-        return token;
-      }
-
-      async function getRoomById(room_id, access_token) {
-        await fetch(`${API_URL}/api/chatroom/${room_id}`, {
-          method: "GET",
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${access_token}`,
-          },
-        })
-          .then((response) => response.json())
-          .then((json_data) => {
-            data = json_data;
-          });
-
-        return data;
-      }
-
-      var room_data;
-      var username;
-
-      window.addEventListener("load", async function (event) {
-        
-        const params = new Proxy(new URLSearchParams(window.location.search), {
-          get: (searchParams, prop) => searchParams.get(prop),
+      await fetch(`${API_URL}/token`, {
+        method: "POST",
+        headers: {
+          Accept: "application/json",
+          "Content-Type": "application/x-www-form-urlencoded",
+        },
+        body: login_details,
+      })
+        .then((response) => response.json())
+        .then((data) => {
+          token = data["access_token"];
         });
 
+      return token;
+    }
+
+    async function getRoomById(room_id, access_token) {
+      await fetch(`${API_URL}/api/chatroom/${room_id}`, {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${access_token}`,
+        },
+      })
+        .then((response) => response.json())
+        .then((json_data) => {
+          data = json_data;
+        });
+
+      return data;
+    }
+
+    var room_data;
+    var username;
+
+    window.addEventListener("load", async function (event) {
+      const params = new Proxy(new URLSearchParams(window.location.search), {
+        get: (searchParams, prop) => searchParams.get(prop),
+      });
+
+      username = localStorage.getItem('username');
+      password = localStorage.getItem("password")
+      let token = await getAccessToken(username, password);
+
+      if (token === null || token === undefined) {
         username = params.username
         if (username === null || username === undefined) {
           username = prompt("Enter username:", "");
+          localStorage.setItem('username', username);
         }
-        
+  
         var password = params.password
         if (password === null || password === undefined) {
           password = prompt(`Enter password for ${username}:`, "");
+          localStorage.setItem('password', password);
         }
+  
         
-        var room_id = params.room_id
-        if (room_id === null || room_id === undefined) {
-            room_id = prompt("Enter room id:", "");
-        }
+        token = await getAccessToken(username, password);
+      }
+      
+      var room_id = params.room_id
+      if (room_id === null || room_id === undefined) {
+        room_id = prompt("Enter room id:", "");
+      }
 
-        let token = await getAccessToken(username, password);
-        room_data = await getRoomById(room_id, token);
-        const title = document.querySelector("#room-title-text");
-        title.innerHTML = room_data.room_name;
+      room_data = await getRoomById(room_id, token);
 
-        start(token);
+      const title = document.querySelector("#room-title-text");
+      title.innerHTML = room_data.room_name;
 
-        fetch(
+      start(token);
+
+      fetch(
         `https://chatapi.fusionsid.xyz/api/chatroom/get_messages?room_id=${room_data.room_id}`,
         {
-            method: "GET",
-            headers: {
-                "Content-Type": "application/json",
-                Authorization: `Bearer ${token}`,
-            },
+          method: "GET",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
         }
-    )
+      )
         .then((response) => response.json())
         .then((json_data) => {
-            var messages = document.getElementById("messages");
-            json_data.forEach(function (item, index) {
-                var message = document.createElement("div");
-
-                var message_author_span = document.createElement("span");
-                message_author_span.className = "message-author";
-                try {
-                    if (item["message_author_username"] === username) {
-                        message.className = "message-you";
-                    } else {
-                        message.className = "message-other";
-                    }
-                } catch {
-                    message.className = "message-other";
-                }
-                if (message.className === "message-you") {
-                    var msgAuthor = document.createTextNode("You");
-                } else {
-                    var msgAuthor = document.createTextNode(
-                        item["message_author_username"]
-                    );
-                }
-                message_author_span.appendChild(msgAuthor);
-                message.appendChild(message_author_span);
-                var br = document.createElement("br");
-                message.appendChild(br);
-                var br = document.createElement("br");
-                message.appendChild(br);
-
-                // content
-                var message_content_span = document.createElement("span");
-                message_content_span.className = "message-content";
-                message_content_span.className = "message-content";
-                var msgContent = document.createTextNode(
-                    item["message_content"]
-                );
-                message_content_span.prepend(msgContent);
-                message.appendChild(message_content_span);
-                var br = document.createElement("br");
-                message.appendChild(br);
-                var br = document.createElement("br");
-                message.appendChild(br);
-
-                // time
-                var message_time_span = document.createElement("span");
-                message_time_span.className = "message-time";
-                let date = new Date(item["message_created_at"] * 1000);
-                let created_at = new Intl.DateTimeFormat("default", {
-                    hour12: true,
-                    hour: "numeric",
-                    minute: "numeric",
-                }).format(date);
-                var msgTime = document.createTextNode(created_at);
-                message_time_span.appendChild(msgTime);
-                message.appendChild(message_time_span);
-
-                // Prepend to messages
-                messages.prepend(message);
-            });
-            var messages = document.getElementById("messages");
-            var last_message = messages.lastChild;
-            const scrollIntoViewOptions = {
-                behavior: "smooth",
-                block: "center",
-            };
-            last_message.scrollIntoView(scrollIntoViewOptions);
-        });
-      });
-
-      function start(access_token) {
-        ws = new WebSocket(
-          `wss://chatapi.fusionsid.xyz/api/ws/chatroom?access_token=${access_token}&room_id=${room_data.room_id}`
-        );
-
-        ws.onerror = function (event) {
-          alert("Failed to connect to websocket");
-          location.reload();
-        };
-
-        ws.onmessage = function (event) {
-          let msg = event.data;
-
-          // Convert ws response to js object
-          while (typeof msg !== "object") {
-            msg = JSON.parse(msg);
-          }
-          try {
-            user = msg["message_author"];
-          } catch (e) {}
-
           var messages = document.getElementById("messages");
+          json_data.forEach(function (item, index) {
+            var message = document.createElement("div");
 
-          // The div:
-          var message = document.createElement("div");
-          try {
-            if (user["username"] === username) {
-              message.className = "message-you";
-            } else {
+            var message_author_span = document.createElement("span");
+            message_author_span.className = "message-author";
+            try {
+              if (item["message_author_username"] === username) {
+                message.className = "message-you";
+              } else {
+                message.className = "message-other";
+              }
+            } catch {
               message.className = "message-other";
             }
-          } catch {
-            message.className = "message-other";
-          }
-
-          var message_author_span = document.createElement("span");
-          var message_content_span = document.createElement("span");
-          var message_time_span = document.createElement("span");
-
-          message_author_span.className = "message-author";
-          message_time_span.className = "message-time";
-          message_content_span.className = "message-content";
-
-          // Time
-          let now = new Date();
-
-          let current_time = new Intl.DateTimeFormat("default", {
-            hour12: true,
-            hour: "numeric",
-            minute: "numeric",
-          }).format(now);
-
-          var msgTime = document.createTextNode(current_time);
-          message_time_span.appendChild(msgTime);
-
-          if (msg["event"] !== undefined) {
-            // On Events
-            if (msg["event"] === "User Disconnect") {
-              user = JSON.parse(msg["user"]);
-              var what_happened = document.createTextNode(
-                `${user["username"]} left the chat`
-              );
-              message_author_span.style.color = "red";
-              message_author_span.appendChild(what_happened);
-            }
-            if (msg["event"] === "User Join") {
-              user = JSON.parse(msg["user"]);
-              var what_happened = document.createTextNode(
-                `${user["username"]} joined the chat`
-              );
-              message_author_span.style.color = "red";
-              message_author_span.appendChild(what_happened);
-            }
-            var br = document.createElement("br");
-            message.appendChild(br);
-            message.appendChild(message_author_span);
-            message.appendChild(message_time_span);
-          } else {
-            // On normal message:
             if (message.className === "message-you") {
               var msgAuthor = document.createTextNode("You");
             } else {
               var msgAuthor = document.createTextNode(
-                msg["message_author"]["username"]
+                item["message_author_username"]
               );
             }
-            var msgContent = document.createTextNode(msg["messsage_content"]);
-
-            message_content_span.appendChild(msgContent);
             message_author_span.appendChild(msgAuthor);
-
             message.appendChild(message_author_span);
             var br = document.createElement("br");
             message.appendChild(br);
             var br = document.createElement("br");
             message.appendChild(br);
+
+            // content
+            var message_content_span = document.createElement("span");
+            message_content_span.className = "message-content";
+            message_content_span.className = "message-content";
+            var msgContent = document.createTextNode(
+              item["message_content"]
+            );
+            message_content_span.prepend(msgContent);
             message.appendChild(message_content_span);
             var br = document.createElement("br");
             message.appendChild(br);
             var br = document.createElement("br");
             message.appendChild(br);
+
+            // time
+            var message_time_span = document.createElement("span");
+            message_time_span.className = "message-time";
+            let date = new Date(item["message_created_at"] * 1000);
+            let created_at = new Intl.DateTimeFormat("default", {
+              hour12: true,
+              hour: "numeric",
+              minute: "numeric",
+            }).format(date);
+            var msgTime = document.createTextNode(created_at);
+            message_time_span.appendChild(msgTime);
             message.appendChild(message_time_span);
-          }
 
-          messages.appendChild(message);
+            // Prepend to messages
+            messages.prepend(message);
+          });
+          var messages = document.getElementById("messages");
+          var last_message = messages.lastChild;
+          const scrollIntoViewOptions = {
+            behavior: "smooth",
+            block: "center",
+          };
+          last_message.scrollIntoView(scrollIntoViewOptions);
+        });
+    });
 
-          const scrollIntoViewOptions = { behavior: "smooth", block: "center" };
-          message.scrollIntoView(scrollIntoViewOptions);
-        };
+    function start(access_token) {
+      ws = new WebSocket(
+        `wss://chatapi.fusionsid.xyz/api/ws/chatroom?access_token=${access_token}&room_id=${room_data.room_id}`
+      );
 
-        function sendMessage(event) {
-          event.preventDefault();
-          var input = document.getElementById("messageText");
-          if (
-            input.value === null ||
-            input.value === undefined ||
-            input.value.replace(" ", "") === ""
-          ) {
+      ws.onerror = function (event) {
+        alert("Failed to connect to websocket");
+        location.reload();
+      };
+
+      ws.onmessage = function (event) {
+        let msg = event.data;
+
+        // Convert ws response to js object
+        while (typeof msg !== "object") {
+          msg = JSON.parse(msg);
+        }
+        try {
+          user = msg["message_author"];
+        } catch (e) { }
+
+        var messages = document.getElementById("messages");
+
+        // The div:
+        var message = document.createElement("div");
+        try {
+          if (user["username"] === username) {
+            message.className = "message-you";
           } else {
-            ws.send(
-              JSON.stringify({
-                message_content: input.value,
-                access_token: access_token,
-              })
-            );
+            message.className = "message-other";
           }
-          input.value = "";
+        } catch {
+          message.className = "message-other";
         }
 
-        const form = document.querySelector("#message-send-div");
-        form.addEventListener("submit", sendMessage);
+        var message_author_span = document.createElement("span");
+        var message_content_span = document.createElement("span");
+        var message_time_span = document.createElement("span");
+
+        message_author_span.className = "message-author";
+        message_time_span.className = "message-time";
+        message_content_span.className = "message-content";
+
+        // Time
+        let now = new Date();
+
+        let current_time = new Intl.DateTimeFormat("default", {
+          hour12: true,
+          hour: "numeric",
+          minute: "numeric",
+        }).format(now);
+
+        var msgTime = document.createTextNode(current_time);
+        message_time_span.appendChild(msgTime);
+
+        if (msg["event"] !== undefined) {
+          // On Events
+          if (msg["event"] === "User Disconnect") {
+            user = JSON.parse(msg["user"]);
+            var what_happened = document.createTextNode(
+              `${user["username"]} left the chat`
+            );
+            message_author_span.style.color = "red";
+            message_author_span.appendChild(what_happened);
+          }
+          if (msg["event"] === "User Join") {
+            user = JSON.parse(msg["user"]);
+            var what_happened = document.createTextNode(
+              `${user["username"]} joined the chat`
+            );
+            message_author_span.style.color = "red";
+            message_author_span.appendChild(what_happened);
+          }
+          var br = document.createElement("br");
+          message.appendChild(br);
+          message.appendChild(message_author_span);
+          message.appendChild(message_time_span);
+        } else {
+          // On normal message:
+          if (message.className === "message-you") {
+            var msgAuthor = document.createTextNode("You");
+          } else {
+            var msgAuthor = document.createTextNode(
+              msg["message_author"]["username"]
+            );
+          }
+          var msgContent = document.createTextNode(msg["messsage_content"]);
+
+          message_content_span.appendChild(msgContent);
+          message_author_span.appendChild(msgAuthor);
+
+          message.appendChild(message_author_span);
+          var br = document.createElement("br");
+          message.appendChild(br);
+          var br = document.createElement("br");
+          message.appendChild(br);
+          message.appendChild(message_content_span);
+          var br = document.createElement("br");
+          message.appendChild(br);
+          var br = document.createElement("br");
+          message.appendChild(br);
+          message.appendChild(message_time_span);
+        }
+
+        messages.appendChild(message);
+
+        const scrollIntoViewOptions = { behavior: "smooth", block: "center" };
+        message.scrollIntoView(scrollIntoViewOptions);
+      };
+
+      function sendMessage(event) {
+        event.preventDefault();
+        var input = document.getElementById("messageText");
+        if (
+          input.value === null ||
+          input.value === undefined ||
+          input.value.replace(" ", "") === ""
+        ) {
+        } else {
+          ws.send(
+            JSON.stringify({
+              message_content: input.value,
+              access_token: access_token,
+            })
+          );
+        }
+        input.value = "";
       }
-    </script>
-  </body>
+
+      const form = document.querySelector("#message-send-div");
+      form.addEventListener("submit", sendMessage);
+    }
+  </script>
+</body>
+
 </html>

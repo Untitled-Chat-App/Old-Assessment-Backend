@@ -8,38 +8,25 @@ It will also use oauth2 authentication, hashing and end to end encryption to ens
 This api is written in python which is my main and favorite language whereas the frontend will be written in JS using Electron to make a desktop app.
 
 Structure:
-```
-├── Makefile
-├── README.md
-├── docs
-│   ├── docs.md
-│   └── images
-│       ├── get_room_by_id_schema.jpg
-│       ├── get_user_by_id.jpg
-│       ├── new_chatroom_schema.jpg
-│       ├── signup_request_schema.jpg
-│       ├── token_request_schema.jpg
-│       ├── update_me_schema.jpg
-│       ├── update_users_schema.jpg
-│       └── validation_error.jpg
-└── src
-    ├── api
+```bash
+└── src # all code for the api
+    ├── api # actual routes and endpoints
     │   ├── auth
     │   │   ├── __init__.py
-    │   │   └── authentication.py
-    │   └── routes
+    │   │   └── authentication.py # authentication and authorization system code
+    │   └── routes # api rest / websocket routes
     │       ├── __init__.py
-    │       ├── rooms
+    │       ├── rooms # room endpoints (http/s and ws/s)
     │       │   ├── chatroom_api.py
     │       │   └── chatroom_ws.py
-    │       └── user
+    │       └── user # user endpoints (http/s)
     │           ├── deleteuser.py
     │           ├── getuser.py
     │           ├── modify_user.py
     │           ├── reset_password_email.py
     │           └── signup.py
-    ├── cert.pem
-    ├── core
+    ├── cert.pem # ssl certificate file for https
+    ├── core # this has utils, classes/models, database functions etc
     │   ├── database
     │   │   ├── __init__.py
     │   │   ├── context.py
@@ -53,10 +40,10 @@ Structure:
     │   └── utils
     │       ├── __init__.py
     │       └── hash.py
-    ├── html
+    ├── html # html files for pages like the demo page
     │   ├── demo.html
     │   └── imagine_forgeting.html
-    ├── key.pem
-    ├── main.py
-    └── requirements.txt
+    ├── key.pem # ssl keyfile for https
+    ├── main.py # file to start the api and actually run it
+    └── requirements.txt # package / library requirements
 ```

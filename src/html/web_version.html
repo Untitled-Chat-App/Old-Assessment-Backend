@@ -107,7 +107,7 @@
     .message-you .message-author {
       color: white;
       font-family: aileron;
-      font-size: 1.25rem;
+      font-size: 1rem;
     }
 
     .message-you .message-content {
@@ -134,7 +134,7 @@
     .message-other .message-author {
       color: white;
       font-family: aileron;
-      font-size: 1.25rem;
+      font-size: 1rem;
     }
 
     .message-other .message-content {
@@ -229,17 +229,17 @@
           username = prompt("Enter username:", "");
           localStorage.setItem('username', username);
         }
-  
+
         var password = params.password
         if (password === null || password === undefined) {
           password = prompt(`Enter password for ${username}:`, "");
           localStorage.setItem('password', password);
         }
-  
-        
+
+
         token = await getAccessToken(username, password);
       }
-      
+
       var room_id = params.room_id
       if (room_id === null || room_id === undefined) {
         room_id = prompt("Enter room id:", "");

@@ -8,6 +8,8 @@ import os
 import ssl
 import random
 import smtplib
+from email.mime.text import MIMEText
+from email.mime.multipart import MIMEMultipart
 
 from slowapi import Limiter
 from slowapi.util import get_remote_address
@@ -123,18 +125,7 @@ async def create_account(
 
     del user.password
 
-    github_url = "https://github.com/Untitled-Chat-App"
-    api_url = "https://chatapi.fusionsid.xyz"
-    api_docs = "https://chatapi.fusionsid.xyz/documentation"
-
-    message = f"""
-Welcome {user.username} and thank you for signing up to the chat app!
-
-Extra Info:
-This app is open source so the code can all be found here: {github_url}
-The api is mostly public and can be found here: {api_url}
-API docs: {api_docs}
-"""
+    message = await get_message(user)
 
     context = ssl.create_default_context()
     with smtplib.SMTP_SSL("smtp.gmail.com", 465, context=context) as server:
@@ -157,3 +148,20 @@ API docs: {api_docs}
             }
 
     return {"success": True, "detail": "User created successfully", "user": user}
+
+
+async def get_message(user):
+    message = MIMEMultipart("alternative")
+    message["Subject"] = "Welcome to Untitled-Chat"
+    message["From"] = os.environ["EMAIL"]
+    message["To"] = user.email
+
+    html = """
+    welcome bro
+    """.replace(
+        "{username}", user.username
+    )
+    html_message = MIMEText(html, "html")
+    message.attach(html_message)
+
+    return message.as_string()

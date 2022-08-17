@@ -4,7 +4,10 @@ Code for the endpoint to signup/create a new user
 
 __all__ = ["signup_endpoint"]
 
+import os
+import ssl
 import random
+import smtplib
 
 from slowapi import Limiter
 from slowapi.util import get_remote_address
@@ -105,18 +108,56 @@ async def create_account(
             )
 
     user = await get_user(user_data.username)  # fetch user from database
-    if user is not None:  # if user exists (user was created properly), return user
-        del user.password
-        return {"success": True, "detail": "User created successfully", "user": user}
+    if user is None:
+        # if not tell em you failed
+        raise HTTPException(
+            status_code=500,
+            detail={
+                "success": False,
+                "detail": "User failed to be created",
+                "error": "",
+                "tip": "Try signing up again",
+                "extra": "Skill issue",
+            },
+        )
 
-    # if not tell em you failed
-    raise HTTPException(
-        status_code=500,
-        detail={
-            "success": False,
-            "detail": "User failed to be created",
-            "error": "",
-            "tip": "Try signing up again",
-            "extra": "Skill issue",
-        },
-    )
+    del user.password
+
+    github_url = "https://github.com/Untitled-Chat-App"
+    api_url = "https://chatapi.fusionsid.xyz"
+    api_docs = "https://chatapi.fusionsid.xyz/documentation"
+
+    message = f"""
+Welcome {user.username} and thank you for signing up to the chat app!
+
+Extra Info:
+This app is open source so the code can all be found here: {github_url}
+The api is mostly public and can be found here: {api_url}
+API docs: {api_docs}
+"""
+
+    context = ssl.create_default_context()
+    with smtplib.SMTP_SSL("smtp.gmail.com", 465, context=context) as server:
+        server.login(os.environ["EMAIL"], os.environ["EMAIL_PASSWORD"])
+        try:
+            server.sendmail(os.environ["EMAIL"], user.email, message)
+
+        except Exception as e:
+            return {
+                "success": True,
+                "detail": "User created successfully",
+                "user": user,
+                "welcome_email": {
+                    "success": False,
+                    "detail": "An error occured on the server side while trying to send this email",
+                    "error": str(e),
+                    "tip": "The email you used for signup may be incorrect so if you every forget your password GG",
+                    "extra": "Just get better and enter your real email next time",
+                },
+            }
+
+    return {
+        "success": True, 
+        "detail": "User created successfully", 
+        "user": user
+    }

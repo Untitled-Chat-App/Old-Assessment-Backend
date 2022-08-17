@@ -6,4 +6,5 @@ python-dotenv
 python_jose
 slowapi
 python-multipart
+argon2-cffi
 "uvicorn[standard]"

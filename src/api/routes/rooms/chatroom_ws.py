@@ -109,7 +109,7 @@ async def process_message_json(data: str, room: Room) -> RoomMessage:
     async with asyncpg_connect() as conn:
         message_id = None
         while True:
-            message_id = random.randint(0, 1_000_000_000)
+            message_id = random.randint(0, 9_000_000_000_000_000_000)
             data = await conn.fetch(
                 "SELECT * FROM room_messages WHERE message_id=$1", message_id
             )

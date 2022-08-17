@@ -17,7 +17,7 @@ async def create_user_db():
         async with conn.transaction():  # start a transaction incase something goes wrong
             await conn.execute(
                 """CREATE TABLE IF NOT EXISTS Users (
-                    user_id INTEGER PRIMARY KEY NOT NULL, 
+                    user_id BIGINT PRIMARY KEY NOT NULL, 
                     username TEXT NOT NULL, 
                     email TEXT NOT NULL, 
                     password TEXT NOT NULL,
@@ -37,7 +37,7 @@ async def create_room_db():
         async with conn.transaction():  # start a transaction incase something goes wrong
             await conn.execute(
                 """CREATE TABLE IF NOT EXISTS Rooms (
-                    room_id INTEGER PRIMARY KEY NOT NULL, 
+                    room_id BIGINT PRIMARY KEY NOT NULL, 
                     room_name TEXT NOT NULL, 
                     room_created_at INTEGER NOT NULL,
                     room_description TEXT
@@ -55,7 +55,7 @@ async def create_room_messages_db():
         async with conn.transaction():  # start a transaction incase something goes wrong
             await conn.execute(
                 """CREATE TABLE IF NOT EXISTS room_messages (
-                    message_id integer NOT NULL,
+                    message_id BIGINT NOT NULL,
                     message_content text NOT NULL,
                     message_author_id integer NOT NULL,
                     message_created_at integer NOT NULL,

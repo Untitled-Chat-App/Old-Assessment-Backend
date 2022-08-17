@@ -191,6 +191,7 @@
         let login_details = new URLSearchParams({
           username: username,
           password: password,
+          scope: "get_old_messages"
         }).toString();
 
         await fetch(`${API_URL}/token`, {

@@ -276,7 +276,7 @@ async def get_message(user):
                                                 </td>
                                             </tr>
                                             <tr class="">
-                                                <td class="headline">Welcome to Untitled-Chat!</td>
+                                                <td class="headline">Welcum to Untitled-Chat!</td>
                                             </tr>
                                             <tr>
                                                 <td>

@@ -40,12 +40,12 @@ app.include_router(delete_user_endpoint)
 app.include_router(other_user_endpoints)
 
 
-@app.get("/demo", tags=["Pages"])
+@app.get("/web", tags=["Pages"])
 async def demo_page(request: Request):
     """
     The demo page
     """
-    with open("./html/demo.html") as f:
+    with open("./html/web_version.html") as f:
         data = f.read()
     return HTMLResponse(content=data)
 
@@ -75,6 +75,16 @@ async def documentation(request: Request):
     """
     return RedirectResponse(
         "https://github.com/Untitled-Chat-App/Backend/wiki/introduction#introduction"
+    )
+
+
+@app.get("/code", tags=["Other"])
+async def code(request: Request):
+    """
+    Code for the app
+    """
+    return RedirectResponse(
+        "https://github.com/Untitled-Chat-App/"
     )
 
 

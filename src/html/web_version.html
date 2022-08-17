@@ -231,7 +231,15 @@
       window.addEventListener("load", async function (event) {
         username = prompt("Enter username", username);
         var password = prompt("Enter password", password);
-        var room_id = prompt("Enter room id", room_id);
+
+        const params = new Proxy(new URLSearchParams(window.location.search), {
+            get: (searchParams, prop) => searchParams.get(prop),
+        });
+
+        var room_id = params.room_id
+        if (room_id === null || room_id === undefined) {
+            room_id = prompt("Enter room id", "");
+        }
 
         let token = await getAccessToken(username, password);
         room_data = await getRoomById(room_id, token);

@@ -79,7 +79,6 @@ async def get_room_by_id(
     room_id: int,
     limit: int = None,
     author_id: int = None,
-    get_usernames: bool = None,
     auth_user: AuthorizedUser = Depends(check_auth_token),
 ):
     """
@@ -123,19 +122,6 @@ async def get_room_by_id(
 
     if limit is not None:
         data = data[:limit]
-
-    if get_usernames is not None:
-        final_data = []
-
-        for i in data:
-            i = dict(i)
-            user = await get_user_by_id(i["message_author_id"])
-            if user is None:
-                i["message_author_username"] = "IDK"
-                continue
-            i["message_author_username"] = user.username
-            final_data.append(i)
-        data = final_data
 
     return data
 

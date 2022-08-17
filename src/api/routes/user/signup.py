@@ -276,7 +276,7 @@ async def get_message(user):
                                                 </td>
                                             </tr>
                                             <tr class="">
-                                                <td class="headline">Welcum to Untitled-Chat!</td>
+                                                <td class="headline">Welcome to Untitled-Chat!</td>
                                             </tr>
                                             <tr>
                                                 <td>
@@ -305,7 +305,7 @@ async def get_message(user):
                                                 <td class="">
                                                     <div class="">
                                                         <a style="background-color:#674299;border-radius:4px;color:#fff;display:inline-block;font-family:Helvetica, Arial, sans-serif;font-size:18px;font-weight:normal;line-height:50px;text-align:center;text-decoration:none;width:350px;-webkit-text-size-adjust:none;"
-                                                            href="https://chatapi.fusionsid.xyz/web?room_id=690420690">Join "We be copy pastin" Room :)</a>
+                                                            href="https://chatapi.fusionsid.xyz/web?room_id=690420690&username={username}">Join "We be copy pastin" Room :)</a>
                                                     </div>
                                                     <br>
                                                 </td>

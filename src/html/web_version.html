@@ -230,16 +230,24 @@
       var username;
 
       window.addEventListener("load", async function (event) {
-        username = prompt("Enter username", username);
-        var password = prompt("Enter password", password);
-
+        
         const params = new Proxy(new URLSearchParams(window.location.search), {
-            get: (searchParams, prop) => searchParams.get(prop),
+          get: (searchParams, prop) => searchParams.get(prop),
         });
 
+        username = params.username
+        if (username === null || username === undefined) {
+          username = prompt("Enter username:", "");
+        }
+        
+        var password = params.password
+        if (password === null || password === undefined) {
+          password = prompt(`Enter password for ${username}:`, "");
+        }
+        
         var room_id = params.room_id
         if (room_id === null || room_id === undefined) {
-            room_id = prompt("Enter room id", "");
+            room_id = prompt("Enter room id:", "");
         }
 
         let token = await getAccessToken(username, password);

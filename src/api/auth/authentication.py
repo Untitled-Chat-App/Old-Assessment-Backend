@@ -124,15 +124,16 @@ async def check_auth_token(token: str = Depends(oauth2_scheme)) -> AuthorizedUse
     if user is None:
         raise credentials_exception
 
-    # aditional scopes
-    if "delete_self" in scopes:
-        user.permissions.delete_self = True
-    if "create_rooms" in scopes:
-        user.permissions.create_rooms = True
-    if "mofify_self" in scopes:
-        user.permissions.mofify_self = True
-    if "get_old_messages" in scopes:
-        user.permissions.get_old_messages = True
+    for scope in scopes:
+        match scope:
+            case "delete_self":
+                user.permissions.delete_self = True
+            case "create_rooms":
+                user.permissions.create_rooms = True
+            case "mofify_self":
+                user.permissions.mofify_self = True
+            case "get_old_messages":
+                user.permissions.get_old_messages = True
 
     # return the user if correct token
     return user
@@ -183,9 +184,9 @@ async def login_for_access_token(
             "mofify_self",
             "get_old_messages",
         ]
-        for i in scopes:
-            if i not in extra_scope_options:
-                scopes.remove(i)
+        for scope in scopes:
+            if scope not in extra_scope_options:
+                scopes.remove(scope)
 
     if not user:
         raise HTTPException(

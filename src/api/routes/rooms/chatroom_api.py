@@ -53,7 +53,7 @@ async def create_new_chatroom(
     async with asyncpg_connect() as conn:
         async with conn.transaction():
             while True:
-                room_id = random.randint(0, 9_000_000_000_000_000_000)
+                room_id = random.randint(0, 1_000_000_000_000_000)
                 data = await conn.fetch("SELECT * FROM Rooms WHERE room_id=$1", room_id)
                 if len(data) == 0:
                     break

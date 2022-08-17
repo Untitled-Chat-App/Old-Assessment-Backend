@@ -83,6 +83,8 @@ async def me(request: Request, user: AuthorizedUser = Depends(check_auth_token))
     """
     Quick endpoint to check if youre logged in
     """
+    del user.password
+
     return user
 
 

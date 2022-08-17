@@ -63,6 +63,8 @@ async def get_all_users(
         )
 
         del user.password
+        del user.email
+
         users.append(user)
 
     return users
@@ -107,4 +109,6 @@ async def get_user_with_user_id(
         )
 
     del user.password
+    del user.email
+    
     return user

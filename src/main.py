@@ -6,11 +6,10 @@ __authors__ = ["Siddhesh Zantye"]
 __version__ = "0.0.1"
 
 import os
-import uvicorn
-from fastapi import Depends
-from dotenv import load_dotenv
 
-from fastapi import Request
+import uvicorn
+from dotenv import load_dotenv
+from fastapi import Request, Depends
 from fastapi.responses import HTMLResponse, RedirectResponse
 
 from api.routes import (
@@ -22,7 +21,6 @@ from api.routes import (
     reset_password_endpoint,
     delete_user_endpoint,
 )  # import all the api routes
-
 from core.models import Chat_API, AuthorizedUser
 from api.auth import oauth2_endpoint, check_auth_token
 

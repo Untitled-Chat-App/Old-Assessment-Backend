@@ -154,7 +154,7 @@ async def create_account(
 async def get_message(user):
     message = MIMEMultipart("alternative")
     message["Subject"] = "Welcome to Untitled-Chat"
-    message["From"] = os.environ["EMAIL"]
+    message["From"] = "chat@fusionsid.xyz"
     message["To"] = user.email
 
     html = welcome_email_html.replace(

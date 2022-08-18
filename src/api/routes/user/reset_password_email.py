@@ -132,7 +132,7 @@ async def reset_user_password(
 async def get_message(encoded_jwt, to):
     message = MIMEMultipart("alternative")
     message["Subject"] = "Reset Password"
-    message["From"] = os.environ["EMAIL"]
+    message["From"] = "chat@fusionsid.xyz"
     message["To"] = to
 
     html = reset_password_email.replace("encoded_jwt", encoded_jwt)

@@ -82,8 +82,7 @@ async def create_account(
                 "username must be 3-32 characters long",
                 "no _ or . allowed at the beginning",
                 "no __ or _. or ._ or .. inside",
-                "no _ or . at the end"
-                "Allowed Characters: a-z A-Z 0-9 . _"
+                "no _ or . at the end" "Allowed Characters: a-z A-Z 0-9 . _",
             ],
         },
     )

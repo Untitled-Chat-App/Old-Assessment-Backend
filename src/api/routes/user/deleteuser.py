@@ -7,7 +7,7 @@ __all__ = ["delete_user_endpoint"]
 from fastapi import Depends, APIRouter, HTTPException, Request
 
 from ...auth import check_auth_token
-from core.models import AuthorizedUser, AuthPerms
+from core.models import AuthorizedUser
 from core.database import get_user_by_id, asyncpg_connect
 
 delete_user_endpoint = APIRouter(

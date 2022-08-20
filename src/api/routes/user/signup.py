@@ -4,6 +4,7 @@ Code for the endpoint to signup/create a new user
 
 __all__ = ["signup_endpoint"]
 
+import re
 import os
 import ssl
 import random
@@ -13,13 +14,13 @@ from email.mime.multipart import MIMEMultipart
 
 from slowapi import Limiter
 from slowapi.util import get_remote_address
-from fastapi import Depends, APIRouter, HTTPException, Request
+from fastapi import APIRouter, HTTPException, Request
 
 from ...auth import get_user
-from core.models import NewUser
 from core.utils import hash_text
 from core.utils import welcome_email_html
 from core.database import asyncpg_connect
+from core.models import NewUser, AuthorizedUser
 
 
 signup_endpoint = APIRouter(
@@ -54,7 +55,6 @@ async def create_account(
             "success": False,
             "detail": "User with this username already exists",
             "username_provided": str(user_data.username),
-            "error": "",
             "tip": "Change the username",
             "extra": "Skill issue",
         },
@@ -65,12 +65,31 @@ async def create_account(
         detail={
             "success": False,
             "detail": "User with this email already exists",
-            "email_provided": str(user_data.username),
-            "error": "",
+            "email_provided": str(user_data.email),
             "tip": "Change the email",
             "extra": "Skill issue",
         },
     )
+
+    invalid_username = HTTPException(
+        status_code=409,
+        detail={
+            "success": False,
+            "detail": "Username failed checks",
+            "username_provided": str(user_data.username),
+            "tip": "Follow the criteria",
+            "criteria": [
+                "username must be 3-32 characters long",
+                "no _ or . allowed at the beginning",
+                "no __ or _. or ._ or .. inside",
+                "no _ or . at the end"
+                "Allowed Characters: a-z A-Z 0-9 . _"
+            ],
+        },
+    )
+
+    if not await validate_user(user_data.username):
+        raise invalid_username
 
     async with asyncpg_connect() as conn:
         email_search = await conn.fetch(
@@ -118,7 +137,6 @@ async def create_account(
             detail={
                 "success": False,
                 "detail": "User failed to be created",
-                "error": "",
                 "tip": "Try signing up again",
                 "extra": "Skill issue",
             },
@@ -151,16 +169,51 @@ async def create_account(
     return {"success": True, "detail": "User created successfully", "user": user}
 
 
-async def get_message(user):
+async def get_message(user: AuthorizedUser) -> str:
     message = MIMEMultipart("alternative")
     message["Subject"] = "Welcome to Untitled-Chat"
     message["From"] = "chat@fusionsid.xyz"
     message["To"] = user.email
 
-    html = welcome_email_html.replace(
-        "{username}", user.username
-    )
+    html = welcome_email_html.replace("{username}", user.username)
     html_message = MIMEText(html, "html")
     message.attach(html_message)
 
     return message.as_string()
+
+
+async def validate_user(username: str) -> bool:
+    """
+    Takes in a username and checks if it is valid.
+
+    Parameters:
+        username (str): The username of the person signing up
+
+    Criteria:
+        ^(?=.{3,32}$)(?![_.])(?!.*[_.]{2})[a-zA-Z0-9._]+(?<![_.])$
+        └─────┬────┘└───┬──┘└─────┬─────┘└─────┬─────┘ └───┬───┘
+            │         │         │            │           no _ or . at the end
+            │         │         │            │
+            │         │         │            allowed characters
+            │         │         │
+            │         │         no __ or _. or ._ or .. inside
+            │         │
+            │         no _ or . allowed at the beginning
+            │
+            username must be 3-32 characters long
+
+    Returns:
+        bool: If username is value it returns True else False
+    """
+    if len(username) < 1:
+        return False
+
+    if username[0].isnumeric():
+        return False
+
+    if not re.match(
+        "^(?=.{8,20}$)(?![_.])(?!.*[_.]{2})[a-zA-Z0-9._]+(?<![_.])$", username
+    ):
+        return False
+
+    return True

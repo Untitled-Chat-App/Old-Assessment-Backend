@@ -10,8 +10,8 @@ import datetime
 from fastapi import APIRouter, Depends, HTTPException, Request
 
 from ...auth import check_auth_token
-from core.database import asyncpg_connect, get_room, get_user_by_id
 from core.models import AuthorizedUser, NewRoom
+from core.database import asyncpg_connect, get_room
 
 
 chatroom_endpoints = APIRouter(

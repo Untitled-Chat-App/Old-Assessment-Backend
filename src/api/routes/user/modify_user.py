@@ -7,10 +7,10 @@ __all__ = ["get_user_endpoint"]
 from pydantic import BaseModel
 from fastapi import Depends, APIRouter, HTTPException, Request
 
-from core.utils import hash_text
 from ...auth import check_auth_token
-from core.models import AuthorizedUser
-from core.database import get_user_by_id, asyncpg_connect
+from core.utils import hash_text, validate_user
+from core.models import AuthorizedUser, UpdateBody
+from core.database import get_user_by_id, asyncpg_connect, update_username_everywhere
 
 
 other_user_endpoints = APIRouter(
@@ -18,11 +18,6 @@ other_user_endpoints = APIRouter(
         "Users",
     ]
 )
-
-
-class UpdateBody(BaseModel):
-    attribute: str
-    new_value: str | int | bool
 
 
 @other_user_endpoints.patch("/api/users/{user_id}")
@@ -42,35 +37,6 @@ async def update_user_data(
             new_value (str|int|bool): The new value of that attribute
         }
     """
-    OPTIONS = list(AuthorizedUser.__fields__.keys())
-    OPTIONS.remove("user_id")
-    OPTIONS.remove("permissions")
-
-    if update_details.attribute not in OPTIONS:
-        raise HTTPException(
-            status_code=400,
-            detail={
-                "success": False,
-                "detail": "Invalid attribute provided",
-                "options": OPTIONS,
-                "error": "",
-                "tip": "Read the options and do it right this time",
-                "extra": "Skill issue",
-            },
-        )
-
-    if auth_user.permissions.update_users != True:
-        raise HTTPException(
-            status_code=403,
-            detail={
-                "success": False,
-                "detail": "You don't have the permissions to perform this request",
-                "error": "",
-                "tip": "Get the perms dude",
-                "extra": "Skill issue",
-                "permission_needed": ["update_users"],
-            },
-        )
     user = await get_user_by_id(user_id)
 
     if user is None:
@@ -86,47 +52,7 @@ async def update_user_data(
             },
         )
 
-    if update_details.attribute == "password":
-        password = await hash_text(update_details.new_value)
-
-        async with asyncpg_connect() as conn:
-            async with conn.transaction():
-                await conn.execute(
-                    "UPDATE Users Set password=$1 WHERE user_id=$2", password, user_id
-                )
-
-    elif update_details.attribute in ["email", "public_key", "username"]:
-        async with asyncpg_connect() as conn:
-            async with conn.transaction():
-                await conn.execute(
-                    "UPDATE Users Set {} = $1 WHERE user_id=$2".format(
-                        update_details.attribute
-                    ),
-                    update_details.new_value,
-                    user_id,
-                )
-                if update_details.attribute == "username":
-                    await update_username_everywhere(user_id, update_details.new_value)
-
-    updated_user = await get_user_by_id(user_id)
-
-    if updated_user == user:
-        raise HTTPException(
-            status_code=500,
-            detail={
-                "success": False,
-                "detail": "An error occured server side when trying to update the user.",
-                "error": "",
-                "tip": "Try running this endpoint again",
-                "extra": "Skill issue",
-            },
-        )
-
-    return {
-        "result": "User updated successfully",
-        "updated_user": updated_user,
-        "old_user": user,
-    }
+    return await update_user(user, update_details)
 
 
 @other_user_endpoints.patch("/api/user/me")
@@ -144,58 +70,143 @@ async def update_user_auth_data(
             new_value (str|int|bool): The new value of that attribute
         }
     """
-    OPTIONS = list(AuthorizedUser.__fields__.keys())
-    OPTIONS.remove("user_id")
-    OPTIONS.remove("permissions")
+
+    return await update_user(user, update_details)
+
+
+async def update_user(user: AuthorizedUser, update_details: UpdateBody):
+    """
+    Function to update user
+
+    Parameters:
+        user (AuthorizedUser): The user to update
+        update_details (UpdateBody): The attribute to update and the new value to update it to
+    """
+    OPTIONS = ["username", "email", "public_key", "password"]
+
+    # execptions for this endpoint
+    username_conflict_error = HTTPException(
+        status_code=409,
+        detail={
+            "success": False,
+            "detail": "User with this username already exists",
+            "username_provided": str(update_details.new_value),
+            "tip": "Change the username",
+            "extra": "Skill issue",
+        },
+    )
+
+    email_conflict_error = HTTPException(
+        status_code=409,
+        detail={
+            "success": False,
+            "detail": "User with this email already exists",
+            "email_provided": str(update_details.new_value),
+            "tip": "Change the email",
+            "extra": "Skill issue",
+        },
+    )
+
+    invalid_username = HTTPException(
+        status_code=409,
+        detail={
+            "success": False,
+            "detail": "Username failed checks",
+            "username_provided": str(update_details.new_value),
+            "tip": "Follow the criteria",
+            "criteria": [
+                "username must be 3-32 characters long",
+                "no _ or . allowed at the beginning",
+                "no __ or _. or ._ or .. inside",
+                "no _ or . at the end" "Allowed Characters: a-z A-Z 0-9 . _",
+            ],
+        },
+    )
+
+    invalid_option = HTTPException(
+        status_code=400,
+        detail={
+            "success": False,
+            "detail": "Invalid attribute provided",
+            "options": OPTIONS,
+            "tip": "Read the options and do it right this time",
+            "extra": "Skill issue",
+        },
+    )
+
+    missing_perms = HTTPException(
+        status_code=403,
+        detail={
+            "success": False,
+            "detail": "You don't have the permissions to perform this request",
+            "tip": "Request the perms as a scope in your token request.",
+            "extra": "Skill issue",
+            "permission_needed": ["mofify_self"],
+        },
+    )
+
+    failed_to_create = HTTPException(
+        status_code=500,
+        detail={
+            "success": False,
+            "detail": "An error occured server side when trying to update the user.",
+            "tip": "Try running this endpoint again",
+            "extra": "Skill issue",
+        },
+    )
 
     if update_details.attribute not in OPTIONS:
-        raise HTTPException(
-            status_code=400,
-            detail={
-                "success": False,
-                "detail": "Invalid attribute provided",
-                "options": OPTIONS,
-                "error": "",
-                "tip": "Read the options and do it right this time",
-                "extra": "Skill issue",
-            },
-        )
+        raise invalid_option
 
     if user.permissions.mofify_self != True:
-        raise HTTPException(
-            status_code=403,
-            detail={
-                "success": False,
-                "detail": "You don't have the permissions to perform this request",
-                "error": "",
-                "tip": "Request the perms as a scope in your token request.",
-                "extra": "Skill issue",
-                "permission_needed": ["mofify_self"],
-            },
-        )
+        raise missing_perms
 
-    if update_details.attribute == "password":
-        password = await hash_text(update_details.new_value)
+    async with asyncpg_connect() as conn:
+        async with conn.transaction():
+            match update_details.attribute:
+                case "password":
+                    password = await hash_text(update_details.new_value)
 
-        async with asyncpg_connect() as conn:
-            async with conn.transaction():
-                await conn.execute(
-                    "UPDATE Users Set password=$1 WHERE user_id=$2",
-                    password,
-                    user.user_id,
-                )
+                    async with asyncpg_connect() as conn:
+                        async with conn.transaction():
+                            await conn.execute(
+                                "UPDATE Users Set password=$1 WHERE user_id=$2",
+                                password,
+                                user.user_id,
+                            )
 
-    elif update_details.attribute in ["email", "public_key", "username"]:
-        async with asyncpg_connect() as conn:
-            async with conn.transaction():
-                await conn.execute(
-                    "UPDATE Users Set {} = $1 WHERE user_id=$2".format(
-                        update_details.attribute
-                    ),
-                    update_details.new_value,
-                    user.user_id,
-                )
-                if update_details.attribute == "username":
+                case "public_key":
+                    await conn.execute(
+                        "UPDATE Users Set public_key=$1 WHERE user_id=$2",
+                        update_details.new_value,
+                        user.user_id,
+                    )
+
+                case "email":
+                    email_search = await conn.fetch(
+                        "SELECT * FROM Users WHERE LOWER(email)=LOWER($1)",
+                        update_details.new_value,
+                    )
+                    if len(email_search):
+                        raise email_conflict_error
+
+                    await conn.execute(
+                        "UPDATE Users Set email=$1 WHERE user_id=$2",
+                        update_details.new_value,
+                        user.user_id,
+                    )
+
+                case "username":
+                    username_search = await conn.fetch(
+                        "SELECT * FROM Users WHERE LOWER(username)=LOWER($1)",
+                        update_details.new_value,
+                    )
+                    if len(username_search):
+                        raise username_conflict_error
+
+                    if not await validate_user(update_details.new_value):
+                        raise invalid_username
+
                     await update_username_everywhere(
                         user.user_id, update_details.new_value
                     )
@@ -203,29 +214,14 @@ async def update_user_auth_data(
     updated_user = await get_user_by_id(user.user_id)
 
     if updated_user == user:
-        raise HTTPException(
-            status_code=500,
-            detail={
-                "success": False,
-                "detail": "An error occured server side when trying to update the user.",
-                "error": "",
-                "tip": "Try running this endpoint again",
-                "extra": "Skill issue",
-            },
-        )
+        raise failed_to_create
+
+    del updated_user.password
+    del user.password
 
     return {
-        "result": "User updated successfully",
+        "success": True,
+        "detail": "User updated successfully",
         "updated_user": updated_user,
         "old_user": user,
     }
-
-
-async def update_username_everywhere(user_id: str, new_username: str):
-    async with asyncpg_connect() as conn:
-        async with conn.transaction():
-            await conn.execute(
-                "UPDATE room_messages Set message_author_username = $1 WHERE message_author_id=$2",
-                new_username,
-                user_id,
-            )

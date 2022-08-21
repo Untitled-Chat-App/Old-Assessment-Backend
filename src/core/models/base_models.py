@@ -2,7 +2,15 @@
 Contains pydantic.BaseModel subclasses for api form data
 """
 
-__all__ = ["NewUser", "AuthUser", "Token", "AuthorizedUser", "AuthPerms", "NewRoom"]
+__all__ = [
+    "NewUser",
+    "AuthUser",
+    "Token",
+    "AuthorizedUser",
+    "AuthPerms",
+    "NewRoom",
+    "UpdateBody",
+]
 
 from pydantic import BaseModel
 
@@ -112,3 +120,16 @@ class NewRoom(BaseModel):
 
     room_name: str
     room_description: str
+
+
+class UpdateBody(BaseModel):
+    """
+    Basemodel for the modifying user endpoints
+
+    Attributes:
+        attribute (str): The attribute of the user to update eg "username"
+        new_value (str|int|bool): New value for the attribute
+    """
+
+    attribute: str
+    new_value: str | int | bool

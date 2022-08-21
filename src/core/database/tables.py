@@ -4,7 +4,7 @@ Create the database in case it got deleted or smth or i wanted to redo it
 
 import asyncio
 
-from context import asyncpg_connect
+from core.database import asyncpg_connect
 
 
 async def create_user_db():

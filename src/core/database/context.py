@@ -1,5 +1,6 @@
-""" (module) context
-This contains a custom async context manager for asyncpg so the connection will auto close
+""" (module) utils
+Contains utility functions for the db
+main function this contains is a custom async context manager for asyncpg so the connection will auto close
 """
 
 __all__ = ["asyncpg_connect"]
@@ -40,3 +41,13 @@ async def asyncpg_connect(
 
     # close connection once context manager is closed
     await connection.close()
+
+
+async def update_username_everywhere(user_id: str, new_username: str) -> None:
+    async with asyncpg_connect() as conn:
+        async with conn.transaction():
+            await conn.execute(
+                "UPDATE room_messages Set message_author_username = $1 WHERE message_author_id=$2",
+                new_username,
+                user_id,
+            )
